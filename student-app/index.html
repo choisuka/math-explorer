@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>수학 탐험 — 소인수분해</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --concept: #3b82f6;
+      --challenge: #8b5cf6;
+      --explore: #10b981;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --sub: #64748b;
+      --border: #e2e8f0;
+      --radius: 16px;
+    }
+
+    body {
+      font-family: 'Nanum Gothic', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      background: #1e293b;
+      color: white;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    header h1 {
+      font-family: 'Jua', sans-serif;
+      font-size: 1.4rem;
+    }
+
+    header .unit-badge {
+      background: #3b82f6;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+
+    .container { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
+
+    /* 레벨 선택 화면 */
+    #screen-level .intro {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    #screen-level .intro h2 {
+      font-family: 'Jua', sans-serif;
+      font-size: 1.6rem;
+      margin-bottom: 8px;
+    }
+
+    #screen-level .intro p { color: var(--sub); font-size: 0.95rem; }
+
+    .level-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .level-card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .level-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+
+    .level-card.concept  { border-color: var(--concept); }
+    .level-card.challenge { border-color: var(--challenge); }
+    .level-card.explore  { border-color: var(--explore); }
+
+    .level-icon {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+
+    .concept  .level-icon { background: #dbeafe; }
+    .challenge .level-icon { background: #ede9fe; }
+    .explore  .level-icon { background: #d1fae5; }
+
+    .level-info h3 {
+      font-family: 'Jua', sans-serif;
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+    }
+
+    .level-info p { color: var(--sub); font-size: 0.88rem; }
+
+    .level-count {
+      margin-left: auto;
+      font-size: 0.8rem;
+      color: var(--sub);
+      white-space: nowrap;
+    }
+
+    /* 문제 목록 화면 */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--sub);
+      cursor: pointer;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      border: none;
+      background: none;
+      padding: 0;
+    }
+
+    .back-btn:hover { color: var(--text); }
+
+    .screen-title {
+      font-family: 'Jua', sans-serif;
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-family: 'Nanum Gothic', sans-serif;
+      font-weight: 700;
+    }
+
+    .badge.concept  { background: #dbeafe; color: var(--concept); }
+    .badge.challenge { background: #ede9fe; color: var(--challenge); }
+    .badge.explore  { background: #d1fae5; color: var(--explore); }
+
+    .problem-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .problem-item {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .problem-item:hover { border-color: #93c5fd; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+
+    .problem-num {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--sub);
+      flex-shrink: 0;
+    }
+
+    .problem-item h4 { font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+    .problem-item p  { font-size: 0.82rem; color: var(--sub); }
+    .problem-arrow   { margin-left: auto; color: var(--sub); }
+
+    /* 문제 풀기 화면 */
+    .problem-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      margin-bottom: 16px;
+    }
+
+    .problem-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .problem-header .label { font-size: 0.78rem; color: var(--sub); margin-bottom: 6px; }
+    .problem-header h2 { font-family: 'Jua', sans-serif; font-size: 1.3rem; }
+
+    .problem-body { padding: 20px 24px; }
+
+    .context-box {
+      background: #f1f5f9;
+      border-left: 4px solid #94a3b8;
+      padding: 14px 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+      color: #475569;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .question-box {
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    /* 힌트 */
+    .hints-section { margin-bottom: 24px; }
+
+    .hints-section h4 {
+      font-size: 0.85rem;
+      color: var(--sub);
+      margin-bottom: 10px;
+    }
+
+    .hint-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+
+    .hint-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: white;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-family: 'Nanum Gothic', sans-serif;
+      transition: all 0.15s;
+    }
+
+    .hint-btn:hover:not(:disabled) { border-color: #fbbf24; background: #fefce8; }
+    .hint-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .hint-btn.active { border-color: #fbbf24; background: #fefce8; color: #92400e; }
+
+    .hint-text {
+      background: #fefce8;
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.9rem;
+      color: #78350f;
+      line-height: 1.6;
+      display: none;
+    }
+
+    .hint-text.visible { display: block; }
+
+    /* 답 입력 */
+    .answer-section { }
+
+    .answer-section h4 {
+      font-size: 0.85rem;
+      color: var(--sub);
+      margin-bottom: 10px;
+    }
+
+    .answer-row { display: flex; gap: 10px; }
+
+    .answer-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: 'Nanum Gothic', sans-serif;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .answer-input:focus { border-color: #3b82f6; }
+
+    .check-btn {
+      padding: 12px 24px;
+      background: #1e293b;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Jua', sans-serif;
+      font-size: 1rem;
+      transition: background 0.15s;
+    }
+
+    .check-btn:hover { background: #334155; }
+
+    /* 결과 */
+    .result-box {
+      margin-top: 16px;
+      border-radius: 10px;
+      padding: 16px 20px;
+      display: none;
+    }
+
+    .result-box.visible { display: block; }
+    .result-box.correct { background: #f0fdf4; border: 1.5px solid #86efac; }
+    .result-box.wrong   { background: #fef2f2; border: 1.5px solid #fca5a5; }
+
+    .result-box .result-title {
+      font-family: 'Jua', sans-serif;
+      font-size: 1.1rem;
+      margin-bottom: 6px;
+    }
+
+    .result-box.correct .result-title { color: #16a34a; }
+    .result-box.wrong   .result-title { color: #dc2626; }
+
+    .result-box .answer-text { font-size: 0.92rem; color: #475569; line-height: 1.6; }
+
+    /* 풀이 */
+    .solution-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      display: none;
+    }
+
+    .solution-card.visible { display: block; }
+
+    .solution-header {
+      background: #1e293b;
+      color: white;
+      padding: 14px 24px;
+      font-family: 'Jua', sans-serif;
+      font-size: 1rem;
+    }
+
+    .solution-steps { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+
+    .solution-step { display: flex; gap: 14px; }
+
+    .step-num {
+      width: 28px; height: 28px;
+      background: #1e293b;
+      color: white;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-content h5 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+    .step-content p  { font-size: 0.88rem; color: #475569; line-height: 1.6; }
+
+    .next-btn {
+      width: 100%;
+      padding: 14px;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Jua', sans-serif;
+      font-size: 1.05rem;
+      margin-top: 16px;
+      transition: background 0.15s;
+    }
+
+    .next-btn:hover { background: #2563eb; }
+
+    /* 로딩 */
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--sub);
+    }
+
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: #3b82f6;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🔢 수학 탐험</h1>
+  <span class="unit-badge">중1 · 소인수분해</span>
+</header>
+
+<!-- 레벨 선택 화면 -->
+<div id="screen-level" class="container">
+  <div class="intro">
+    <h2>어떤 문제에 도전할까요?</h2>
+    <p>수준을 선택하면 문제가 나타납니다.</p>
+  </div>
+  <div class="level-cards">
+    <div class="level-card concept" onclick="showList('concept')">
+      <div class="level-icon">💡</div>
+      <div class="level-info">
+        <h3>개념 확인</h3>
+        <p>소수와 소인수분해의 기본 개념을 이해해요</p>
+      </div>
+      <span class="level-count">3문제</span>
+    </div>
+    <div class="level-card challenge" onclick="showList('challenge')">
+      <div class="level-icon">⚡</div>
+      <div class="level-info">
+        <h3>실력 도전</h3>
+        <p>소인수분해를 직접 하고 원리를 설명해요</p>
+      </div>
+      <span class="level-count">3문제</span>
+    </div>
+    <div class="level-card explore" onclick="showList('explore')">
+      <div class="level-icon">🔭</div>
+      <div class="level-info">
+        <h3>깊이 탐구</h3>
+        <p>약수의 개수 공식과 숨겨진 패턴을 탐구해요</p>
+      </div>
+      <span class="level-count">3문제</span>
+    </div>
+  </div>
+</div>
+
+<!-- 문제 목록 화면 -->
+<div id="screen-list" class="container hidden">
+  <button class="back-btn" onclick="showLevelScreen()">← 레벨 선택으로</button>
+  <div class="screen-title">
+    <span id="list-title"></span>
+    <span id="list-badge" class="badge"></span>
+  </div>
+  <div id="problem-list" class="problem-list">
+    <div class="loading"><div class="spinner"></div>문제를 불러오는 중...</div>
+  </div>
+</div>
+
+<!-- 문제 풀기 화면 -->
+<div id="screen-problem" class="container hidden">
+  <button class="back-btn" onclick="showList(currentLevel)">← 목록으로</button>
+
+  <div class="problem-card">
+    <div class="problem-header">
+      <div class="label" id="prob-label"></div>
+      <h2 id="prob-title"></h2>
+    </div>
+    <div class="problem-body">
+      <div class="context-box" id="prob-context"></div>
+      <div class="question-box" id="prob-question"></div>
+
+      <div class="hints-section">
+        <h4>💡 힌트 (단계별로 열어보세요)</h4>
+        <div class="hint-buttons">
+          <button class="hint-btn" id="hint-btn-1" onclick="showHint(1)">힌트 1</button>
+          <button class="hint-btn" id="hint-btn-2" onclick="showHint(2)" disabled>힌트 2</button>
+          <button class="hint-btn" id="hint-btn-3" onclick="showHint(3)" disabled>힌트 3</button>
+        </div>
+        <div class="hint-text" id="hint-text"></div>
+      </div>
+
+      <div class="answer-section">
+        <h4>✏️ 내 답</h4>
+        <div class="answer-row">
+          <input class="answer-input" id="answer-input" type="text" placeholder="답을 입력하세요" onkeydown="if(event.key==='Enter') checkAnswer()">
+          <button class="check-btn" onclick="checkAnswer()">확인</button>
+        </div>
+        <div class="result-box" id="result-box">
+          <div class="result-title" id="result-title"></div>
+          <div class="answer-text" id="result-text"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="solution-card" id="solution-card">
+    <div class="solution-header">📝 풀이 과정</div>
+    <div class="solution-steps" id="solution-steps"></div>
+    <div style="padding: 0 24px 24px;">
+      <button class="next-btn" onclick="nextProblem()">다음 문제 →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const BASE = '../data/units/m1-prime/problems/';
+
+  const LEVELS = {
+    concept:   { label: '개념 확인', ids: ['m1p-001', 'm1p-002', 'm1p-003'] },
+    challenge: { label: '실력 도전', ids: ['m1p-004', 'm1p-005', 'm1p-006'] },
+    explore:   { label: '깊이 탐구', ids: ['m1p-007', 'm1p-008', 'm1p-009'] }
+  };
+
+  let currentLevel = null;
+  let currentIdx = 0;
+  let currentProblem = null;
+  let hintsShown = 0;
+  let cache = {};
+
+  async function fetchProblem(id) {
+    if (cache[id]) return cache[id];
+    const res = await fetch(BASE + id + '.json');
+    const data = await res.json();
+    cache[id] = data;
+    return data;
+  }
+
+  function showLevelScreen() {
+    hide('screen-list');
+    hide('screen-problem');
+    show('screen-level');
+  }
+
+  async function showList(level) {
+    currentLevel = level;
+    const info = LEVELS[level];
+
+    document.getElementById('list-title').textContent = info.label;
+    const badge = document.getElementById('list-badge');
+    badge.textContent = info.label;
+    badge.className = 'badge ' + level;
+
+    hide('screen-level');
+    hide('screen-problem');
+    show('screen-list');
+
+    const listEl = document.getElementById('problem-list');
+    listEl.innerHTML = '<div class="loading"><div class="spinner"></div>문제를 불러오는 중...</div>';
+
+    const problems = await Promise.all(info.ids.map(fetchProblem));
+
+    listEl.innerHTML = problems.map((p, i) => `
+      <div class="problem-item" onclick="openProblem(${i})">
+        <div class="problem-num">${i + 1}</div>
+        <div>
+          <h4>${p.title}</h4>
+          <p>${p.question.length > 50 ? p.question.slice(0, 50) + '…' : p.question}</p>
+        </div>
+        <span class="problem-arrow">›</span>
+      </div>
+    `).join('');
+  }
+
+  async function openProblem(idx) {
+    currentIdx = idx;
+    hintsShown = 0;
+
+    const id = LEVELS[currentLevel].ids[idx];
+    currentProblem = await fetchProblem(id);
+    const p = currentProblem;
+
+    document.getElementById('prob-label').textContent =
+      `${LEVELS[currentLevel].label} · ${idx + 1} / ${LEVELS[currentLevel].ids.length}`;
+    document.getElementById('prob-title').textContent = p.title;
+    document.getElementById('prob-context').textContent = p.context;
+    document.getElementById('prob-question').textContent = p.question;
+
+    document.getElementById('answer-input').value = '';
+    document.getElementById('answer-input').disabled = false;
+
+    const resultBox = document.getElementById('result-box');
+    resultBox.className = 'result-box';
+
+    document.getElementById('solution-card').className = 'solution-card';
+
+    document.getElementById('hint-text').textContent = '';
+    document.getElementById('hint-text').className = 'hint-text';
+
+    document.getElementById('hint-btn-1').className = 'hint-btn';
+    document.getElementById('hint-btn-1').disabled = false;
+    document.getElementById('hint-btn-2').className = 'hint-btn';
+    document.getElementById('hint-btn-2').disabled = true;
+    document.getElementById('hint-btn-3').className = 'hint-btn';
+    document.getElementById('hint-btn-3').disabled = true;
+
+    hide('screen-level');
+    hide('screen-list');
+    show('screen-problem');
+
+    window.scrollTo(0, 0);
+  }
+
+  function showHint(level) {
+    if (level > hintsShown + 1) return;
+    hintsShown = level;
+
+    const p = currentProblem;
+    const hint = p.hints[level - 1];
+    const textEl = document.getElementById('hint-text');
+    textEl.textContent = `힌트 ${level}: ${hint.text}`;
+    textEl.className = 'hint-text visible';
+
+    for (let i = 1; i <= 3; i++) {
+      const btn = document.getElementById(`hint-btn-${i}`);
+      btn.disabled = i > hintsShown + 1;
+      btn.className = 'hint-btn' + (i === level ? ' active' : '');
+    }
+  }
+
+  function checkAnswer() {
+    const input = document.getElementById('answer-input').value.trim();
+    if (!input) return;
+
+    const p = currentProblem;
+    const resultBox = document.getElementById('result-box');
+    const resultTitle = document.getElementById('result-title');
+    const resultText = document.getElementById('result-text');
+
+    // 정답 판정: 핵심 숫자/단어 포함 여부로 간단히 체크
+    const correct = isCorrect(input, p.answer.value);
+
+    if (correct) {
+      resultBox.className = 'result-box correct visible';
+      resultTitle.textContent = '✅ 정답입니다!';
+      resultText.textContent = p.answer.explanation;
+    } else {
+      resultBox.className = 'result-box wrong visible';
+      resultTitle.textContent = '❌ 다시 생각해보세요';
+      resultText.textContent = '힌트를 활용해 다시 도전해보세요.';
+    }
+
+    document.getElementById('answer-input').disabled = true;
+    showSolution();
+  }
+
+  function isCorrect(input, answer) {
+    const norm = s => s.replace(/\s/g, '').toLowerCase();
+    const ni = norm(input);
+    const na = norm(answer);
+    if (ni === na) return true;
+    // 핵심 숫자들이 모두 포함되는지 확인
+    const nums = na.match(/[\d²³⁴⁵×+,]+/g) || [];
+    return nums.length > 0 && nums.every(n => ni.includes(n));
+  }
+
+  function showSolution() {
+    const p = currentProblem;
+    const stepsEl = document.getElementById('solution-steps');
+    stepsEl.innerHTML = p.solution_steps.map(s => `
+      <div class="solution-step">
+        <div class="step-num">${s.step}</div>
+        <div class="step-content">
+          <h5>${s.title}</h5>
+          <p>${s.content}</p>
+        </div>
+      </div>
+    `).join('');
+
+    document.getElementById('solution-card').className = 'solution-card visible';
+  }
+
+  function nextProblem() {
+    const ids = LEVELS[currentLevel].ids;
+    const next = currentIdx + 1;
+    if (next < ids.length) {
+      openProblem(next);
+    } else {
+      showList(currentLevel);
+    }
+  }
+
+  function show(id) { document.getElementById(id).classList.remove('hidden'); }
+  function hide(id) { document.getElementById(id).classList.add('hidden'); }
+</script>
+</body>
+</html>
