@@ -1,0 +1,50 @@
+{
+  "id": "m1p-000",
+  "unit": "m1-prime",
+
+  "matrix": {
+    "korea": 1,
+    "finland": 1
+  },
+  "student_level": "concept",
+
+  "title": "",
+  "context": "",
+  "question": "",
+
+  "answer": {
+    "type": "short",
+    "value": "",
+    "explanation": ""
+  },
+
+  "hints": [
+    { "level": 1, "text": "" },
+    { "level": 2, "text": "" },
+    { "level": 3, "text": "" }
+  ],
+
+  "solution_steps": [
+    { "step": 1, "title": "", "content": "", "visual": null }
+  ],
+
+  "ai_grading": {
+    "rubric": "",
+    "key_concepts": [],
+    "common_errors": []
+  },
+
+  "instructor": {
+    "lesson_questions": [],
+    "misconceptions": [],
+    "teaching_notes": "",
+    "expected_time": 5
+  },
+
+  "metadata": {
+    "created_at": "",
+    "source": "claude-api",
+    "version": 1,
+    "tags": []
+  }
+}
