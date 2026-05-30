@@ -1,0 +1,41 @@
+{
+  "id": "m1p-004",
+  "unit": "m1-prime",
+  "matrix": { "korea": 2, "finland": 1 },
+  "student_level": "challenge",
+  "title": "소인수분해 하기",
+  "context": "모든 합성수는 소수들의 곱으로 나타낼 수 있다. 이것을 소인수분해라고 한다.",
+  "question": "72를 소인수분해 하시오.",
+  "answer": {
+    "type": "short",
+    "value": "72 = 2³ × 3²",
+    "explanation": "72를 소수로만 나누면 2×2×2×3×3 = 2³×3²"
+  },
+  "hints": [
+    { "level": 1, "text": "72를 가장 작은 소수 2로 나눠 봐." },
+    { "level": 2, "text": "72÷2=36, 36÷2=18, 18÷2=9. 이제 9를 소수로 나눠 봐." },
+    { "level": 3, "text": "9=3×3이야. 지금까지 나온 소수들을 거듭제곱으로 정리해봐." }
+  ],
+  "solution_steps": [
+    { "step": 1, "title": "2로 나누기 반복", "content": "72÷2=36 / 36÷2=18 / 18÷2=9", "visual": null },
+    { "step": 2, "title": "3으로 나누기", "content": "9÷3=3 / 3÷3=1", "visual": null },
+    { "step": 3, "title": "거듭제곱으로 정리", "content": "2×2×2×3×3 = 2³×3²", "visual": null }
+  ],
+  "ai_grading": {
+    "rubric": "2³×3²이 나오면 정답. 2×2×2×3×3도 정답으로 인정 (거듭제곱 미정리).",
+    "key_concepts": ["소인수분해", "거듭제곱", "나눗셈 방법"],
+    "common_errors": ["9를 소수로 착각", "거듭제곱 지수 계산 오류"]
+  },
+  "instructor": {
+    "lesson_questions": ["왜 가장 작은 소수부터 나누는 게 편할까?", "다른 소수로 나눠도 결과가 같을까?"],
+    "misconceptions": ["9, 15 등 합성수를 소인수로 착각하는 경우 많음"],
+    "teaching_notes": "나눗셈 과정을 세로로 정렬해서 쓰는 습관 지도. 소수 판별이 먼저 선행되어야 함.",
+    "expected_time": 7
+  },
+  "metadata": {
+    "created_at": "2026-05-30",
+    "source": "claude-dialogue",
+    "version": 1,
+    "tags": ["소인수분해", "거듭제곱", "절차"]
+  }
+}

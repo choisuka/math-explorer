@@ -1,0 +1,41 @@
+{
+  "id": "m1p-001",
+  "unit": "m1-prime",
+  "matrix": { "korea": 1, "finland": 1 },
+  "student_level": "concept",
+  "title": "소수를 찾아라",
+  "context": "자연수 중에는 1과 자기 자신으로만 나누어지는 특별한 수가 있다. 이런 수를 소수라고 한다.",
+  "question": "다음 중 소수를 모두 고르시오. 1, 2, 3, 4, 5, 6, 7",
+  "answer": {
+    "type": "short",
+    "value": "2, 3, 5, 7",
+    "explanation": "1은 소수가 아니고, 4=2×2, 6=2×3으로 소수가 아니다."
+  },
+  "hints": [
+    { "level": 1, "text": "소수는 약수가 정확히 2개인 수야." },
+    { "level": 2, "text": "1의 약수는 1뿐이야. 약수가 1개니까 소수가 아니야." },
+    { "level": 3, "text": "4=2×2, 6=2×3. 이 두 수는 1과 자기 자신 외에 다른 약수가 있어." }
+  ],
+  "solution_steps": [
+    { "step": 1, "title": "소수 정의 확인", "content": "약수가 정확히 2개인 수 = 소수", "visual": null },
+    { "step": 2, "title": "각 수의 약수 나열", "content": "1→{1} / 2→{1,2} / 3→{1,3} / 4→{1,2,4} / 5→{1,5} / 6→{1,2,3,6} / 7→{1,7}", "visual": null },
+    { "step": 3, "title": "약수 2개인 수 선택", "content": "2, 3, 5, 7", "visual": null }
+  ],
+  "ai_grading": {
+    "rubric": "2, 3, 5, 7 네 개를 모두 말하면 정답. 1을 포함하거나 4, 6을 포함하면 오답.",
+    "key_concepts": ["소수 정의", "약수의 개수"],
+    "common_errors": ["1을 소수로 착각", "2를 소수가 아니라고 착각"]
+  },
+  "instructor": {
+    "lesson_questions": ["1은 왜 소수가 아닌가?", "소수가 아닌 수를 뭐라고 부를까?"],
+    "misconceptions": ["1을 소수로 아는 학생 매우 많음 → 반드시 짚고 넘어갈 것"],
+    "teaching_notes": "1이 소수가 아닌 이유를 단순 암기가 아니라 정의에서 도출하도록 유도",
+    "expected_time": 5
+  },
+  "metadata": {
+    "created_at": "2026-05-30",
+    "source": "claude-dialogue",
+    "version": 1,
+    "tags": ["소수", "기초", "약수"]
+  }
+}
