@@ -620,12 +620,12 @@
     const resultText = document.getElementById('result-text');
 
     // 정답 판정: 핵심 숫자/단어 포함 여부로 간단히 체크
-    const correct = isCorrect(input, p.answer.value);
+    const correct = isCorrect(input, p.answer);
 
     if (correct) {
       resultBox.className = 'result-box correct visible';
       resultTitle.textContent = '✅ 정답입니다!';
-      resultText.textContent = p.answer.explanation;
+      resultText.textContent = p.answer_explanation;
     } else {
       resultBox.className = 'result-box wrong visible';
       resultTitle.textContent = '❌ 다시 생각해보세요';
@@ -649,15 +649,22 @@
   function showSolution() {
     const p = currentProblem;
     const stepsEl = document.getElementById('solution-steps');
-    stepsEl.innerHTML = p.solution_steps.map(s => `
+    stepsEl.innerHTML = `
       <div class="solution-step">
-        <div class="step-num">${s.step}</div>
+        <div class="step-num">✓</div>
         <div class="step-content">
-          <h5>${s.title}</h5>
-          <p>${s.content}</p>
+          <h5>정답</h5>
+          <p>${p.answer}</p>
         </div>
       </div>
-    `).join('');
+      <div class="solution-step">
+        <div class="step-num">📖</div>
+        <div class="step-content">
+          <h5>풀이</h5>
+          <p>${p.answer_explanation}</p>
+        </div>
+      </div>
+    `;
 
     document.getElementById('solution-card').className = 'solution-card visible';
   }
