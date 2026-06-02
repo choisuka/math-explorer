@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>math-explorer 강사용</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --border: #2a2d3e;
+      --text: #e8eaf0;
+      --sub: #8b8fa8;
+      --khan: #14b8a6;
+      --korea: #f59e0b;
+      --finland: #6366f1;
+      --accent: #e879f9;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    header p {
+      color: var(--sub);
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .nav button {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--sub);
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+
+    .nav button.active {
+      color: var(--text);
+      border-color: var(--accent);
+    }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* ── 설계 철학 ── */
+    .approach-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.2rem;
+      max-width: 1100px;
+      margin: 0 auto 2rem;
+    }
+
+    .approach-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+
+    .approach-card.khan  { border-top: 3px solid var(--khan); }
+    .approach-card.korea { border-top: 3px solid var(--korea); }
+    .approach-card.finland { border-top: 3px solid var(--finland); }
+
+    .approach-card h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .approach-card.khan h2    { color: var(--khan); }
+    .approach-card.korea h2   { color: var(--korea); }
+    .approach-card.finland h2 { color: var(--finland); }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      margin-bottom: 0.6rem;
+    }
+
+    .tag.strength { background: #16a34a22; color: #4ade80; }
+    .tag.limit    { background: #dc262622; color: #f87171; }
+
+    .approach-card ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .approach-card ul li {
+      font-size: 0.88rem;
+      color: var(--sub);
+      padding: 0.3rem 0;
+      border-bottom: 1px solid var(--border);
+      line-height: 1.6;
+    }
+
+    .approach-card ul li:last-child { border-bottom: none; }
+
+    .approach-card ul li strong {
+      color: var(--text);
+      display: block;
+      font-size: 0.85rem;
+      margin-bottom: 0.1rem;
+    }
+
+    .diagnosis {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem 2rem;
+    }
+
+    .diagnosis h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .diagnosis-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    /* ── 단계 카드 ── */
+    .stage-card {
+      max-width: 1100px;
+      margin: 1.2rem auto 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--finland);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+
+    .stage-card h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--finland);
+      margin-bottom: 1.2rem;
+    }
+
+    .stage-label {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      background: #6366f122;
+      color: var(--finland);
+    }
+
+    .stage-card ul {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 1rem;
+    }
+
+    .stage-card ul li {
+      font-size: 0.88rem;
+      color: var(--sub);
+      padding: 0.3rem 0;
+      border-bottom: 1px solid var(--border);
+      line-height: 1.6;
+    }
+
+    .stage-card ul li:last-child { border-bottom: none; }
+
+    .stage-card ul li strong {
+      color: var(--text);
+      display: block;
+      font-size: 0.85rem;
+      margin-bottom: 0.1rem;
+    }
+
+    .blocking-card {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 0.8rem;
+      border-left: 3px solid transparent;
+    }
+
+    .blocking-card:last-child { margin-bottom: 0; }
+
+    .blocking-card.b1 { border-left-color: var(--khan); }
+    .blocking-card.b2 { border-left-color: var(--korea); }
+
+    .blocking-card h3 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .blocking-card.b1 h3 { color: var(--khan); }
+    .blocking-card.b2 h3 { color: var(--korea); }
+
+    .diagnosis-item {
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 0.8rem 1rem;
+      font-size: 0.85rem;
+    }
+
+    .diagnosis-item span {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .diagnosis-item.khan span   { color: var(--khan); }
+    .diagnosis-item.korea span  { color: var(--korea); }
+    .diagnosis-item.finland span { color: var(--finland); }
+    .diagnosis-item p { color: var(--sub); line-height: 1.5; font-size: 0.82rem; }
+
+    .diagnosis-conclusion {
+      background: linear-gradient(135deg, #6366f122, #e879f922);
+      border: 1px solid #6366f144;
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--text);
+    }
+
+    /* ── 문제 목록 ── */
+    .matrix-header {
+      max-width: 900px;
+      margin: 0 auto 1.5rem;
+      text-align: center;
+    }
+
+    .matrix-header p {
+      color: var(--sub);
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .matrix-grid-wrap {
+      max-width: 900px;
+      margin: 0 auto 2rem;
+      overflow-x: auto;
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .matrix-table th {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.5rem 0.8rem;
+      color: var(--sub);
+    }
+
+    .matrix-table th.col-header { color: var(--finland); }
+    .matrix-table th.row-header { color: var(--korea); text-align: right; white-space: nowrap; }
+
+    .matrix-cell {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.8rem 1rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      min-width: 180px;
+    }
+
+    .matrix-cell:hover { border-color: var(--accent); }
+
+    .matrix-cell.selected {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, #e879f910, #6366f110);
+    }
+
+    .matrix-cell .cell-num {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+
+    .matrix-cell .cell-title {
+      font-size: 0.8rem;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 0.5rem;
+    }
+
+    .matrix-cell .cell-tags {
+      display: flex;
+      gap: 0.3rem;
+      flex-wrap: wrap;
+    }
+
+    .level-tag {
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+    }
+
+    .level-tag.korea { background: #f59e0b22; color: var(--korea); }
+    .level-tag.finland { background: #6366f122; color: var(--finland); }
+
+    /* Detail panel */
+    .problem-detail {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--accent);
+      border-radius: 16px;
+      padding: 1.8rem 2rem;
+      display: none;
+    }
+
+    .problem-detail.visible { display: block; }
+
+    .detail-id {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    .detail-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+    }
+
+    .detail-section {
+      margin-bottom: 1.4rem;
+    }
+
+    .detail-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--sub);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .detail-box {
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: var(--text);
+    }
+
+    .detail-box.answer { border-left: 3px solid var(--khan); }
+    .detail-box.misconception { border-left: 3px solid #f87171; }
+
+    .hint-item {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 0.7rem 1rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: var(--sub);
+      display: flex;
+      gap: 0.8rem;
+    }
+
+    .hint-item:last-child { margin-bottom: 0; }
+
+    .hint-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--finland);
+      min-width: 1.5rem;
+      padding-top: 0.1rem;
+    }
+
+    .followup-item {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      margin-bottom: 0.4rem;
+      font-size: 0.85rem;
+      color: var(--sub);
+      line-height: 1.6;
+    }
+
+    .bridge-box {
+      background: linear-gradient(135deg, #6366f115, #e879f915);
+      border: 1px solid #6366f133;
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: var(--text);
+    }
+
+    .qc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 0.6rem;
+    }
+
+    .qc-item {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 0.7rem 1rem;
+      font-size: 0.8rem;
+    }
+
+    .qc-item .qc-top {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .qc-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+    }
+
+    .qc-badge.pass { background: #16a34a22; color: #4ade80; }
+    .qc-badge.fail { background: #dc262622; color: #f87171; }
+
+    .qc-item p { color: var(--sub); line-height: 1.5; }
+
+    td { padding: 0.4rem; vertical-align: top; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>math-explorer 강사용</h1>
+  <p>소인수분해 · 중1</p>
+</header>
+
+<nav class="nav">
+  <button class="active" onclick="showSection('principles', this)">교육 원리</button>
+  <button onclick="showSection('prime', this)">소인수분해</button>
+  <button onclick="showSection('pipeline', this)">자동화 과정</button>
+  <button onclick="showSection('negative', this)">음수</button>
+</nav>
+
+<!-- 설계 철학 -->
+<div class="section active" id="principles">
+
+  <!-- 본질 카드 -->
+  <div style="max-width:1100px; margin:0 auto 1.5rem;">
+    <div style="background:linear-gradient(135deg,#6366f122,#e879f922); border:1px solid #e879f944; border-radius:16px; padding:1.5rem 2rem;">
+      <div style="font-size:0.75rem; font-weight:700; color:var(--accent); letter-spacing:0.08em; margin-bottom:0.8rem;">본질</div>
+      <p style="font-size:1.15rem; font-weight:700; line-height:1.6; margin-bottom:1.2rem;">
+        수학이 어렵고 싫은 학생이<br>스스로 궁금해지는 순간을 만드는 것
+      </p>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+        <div style="background:var(--bg); border-radius:10px; padding:0.9rem 1rem;">
+          <div style="font-size:0.75rem; color:#f87171; font-weight:600; margin-bottom:0.4rem;">기존 접근</div>
+          <p style="font-size:0.85rem; color:var(--sub); line-height:1.6;">개념 순서를 정한다<br>→ 발문으로 포장한다</p>
+        </div>
+        <div style="background:var(--bg); border-radius:10px; padding:0.9rem 1rem;">
+          <div style="font-size:0.75rem; color:#4ade80; font-weight:600; margin-bottom:0.4rem;">올바른 접근</div>
+          <p style="font-size:0.85rem; color:var(--sub); line-height:1.6;">학생이 궁금해할 상황을 찾는다<br>→ 그 궁금증이 소인수분해로 이어진다</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 핀란드식 설계 원칙 카드 -->
+  <div style="max-width:1100px; margin:0 auto 1.5rem;">
+    <div style="background:var(--surface); border:1px solid var(--border); border-top:3px solid var(--finland); border-radius:16px; padding:1.5rem 2rem;">
+      <div style="font-size:0.75rem; font-weight:700; color:var(--finland); letter-spacing:0.08em; margin-bottom:1rem;">핀란드식 설계 원칙</div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:0.8rem;">
+        <div style="background:var(--bg); border-radius:10px; padding:0.9rem 1rem;">
+          <div style="font-size:0.75rem; color:var(--finland); font-weight:700; margin-bottom:0.3rem;">1. 학생의 배움 중심</div>
+          <p style="font-size:0.82rem; color:var(--sub); line-height:1.5;">교사의 가르침보다 학생의 배움에 초점을 맞춰 설계</p>
+        </div>
+        <div style="background:var(--bg); border-radius:10px; padding:0.9rem 1rem;">
+          <div style="font-size:0.75rem; color:var(--finland); font-weight:700; margin-bottom:0.3rem;">2. 실생활 연계가 진짜여야 한다</div>
+          <p style="font-size:0.82rem; color:var(--sub); line-height:1.5;">학생 주변의 것들로 구성. 수학의 필요성을 스스로 느끼게</p>
+        </div>
+        <div style="background:var(--bg); border-radius:10px; padding:0.9rem 1rem;">
+          <div style="font-size:0.75rem; color:var(--finland); font-weight:700; margin-bottom:0.3rem;">3. 현상에서 출발한다</div>
+          <p style="font-size:0.82rem; color:var(--sub); line-height:1.5;">실제 세계 문제 → 증거 수집 → 기존 이론과 대조 → 새로운 이해</p>
+        </div>
+        <div style="background:var(--bg); border-radius:10px; padding:0.9rem 1rem;">
+          <div style="font-size:0.75rem; color:var(--finland); font-weight:700; margin-bottom:0.3rem;">4. 학생이 질문을 만든다</div>
+          <p style="font-size:0.82rem; color:var(--sub); line-height:1.5;">교사는 조력자. 학생이 스스로 틀을 잡은 문제를 탐구</p>
+        </div>
+        <div style="background:var(--bg); border-radius:10px; padding:0.9rem 1rem;">
+          <div style="font-size:0.75rem; color:var(--finland); font-weight:700; margin-bottom:0.3rem;">5. 쉬운 답이 없는 큰 질문</div>
+          <p style="font-size:0.82rem; color:var(--sub); line-height:1.5;">학생이 스스로 큰 질문을 던지도록 이끄는 방식</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="approach-grid">
+
+    <!-- 칸아카데미 -->
+    <div class="approach-card khan">
+      <h2>칸아카데미</h2>
+
+      <div class="tag strength">강점</div>
+      <ul>
+        <li><strong>시각적 원리 설명</strong>단계별 스캐폴딩이 촘촘하고 명확하다</li>
+      </ul>
+
+      <div class="tag limit" style="margin-top:0.8rem">한계</div>
+      <ul>
+        <li><strong>동기가 없다</strong>"소인수분해란 무엇인가"는 설명하지만 "왜 배우는가"는 없음</li>
+        <li><strong>천장이 낮다</strong>절차 숙달에서 멈춤. 구조적 사고로 넘어가지 않음</li>
+        <li><strong>맥락이 장식이다</strong>피자·사탕 맥락은 계산 포장일 뿐, 수학적 본질과 무관</li>
+      </ul>
+    </div>
+
+    <!-- 한국식 -->
+    <div class="approach-card korea">
+      <h2>한국식</h2>
+
+      <div class="tag strength">강점</div>
+      <ul>
+        <li><strong>정교한 문제 구조</strong>약수 개수, 서로소, 완전제곱수 등 개념 간 연결이 깊음</li>
+        <li><strong>체계적 난이도 설계</strong>상위권 학생을 끝까지 밀어붙일 수 있다</li>
+      </ul>
+
+      <div class="tag limit" style="margin-top:0.8rem">한계</div>
+      <ul>
+        <li><strong>동기가 없다</strong>학생은 왜 이 구조를 배우는지 모른 채 훈련함</li>
+        <li><strong>발견이 없다</strong>개념을 먼저 주고 확인하는 방식</li>
+        <li><strong>오개념이 숨는다</strong>절차를 외우면 틀리지 않아 오개념이 드러나지 않음</li>
+      </ul>
+    </div>
+
+    <!-- 핀란드식 -->
+    <div class="approach-card finland">
+      <h2>핀란드식</h2>
+
+      <div class="tag strength">강점</div>
+      <ul>
+        <li><strong>동기가 먼저다</strong>학생이 필요를 느끼고 나서 개념이 등장</li>
+        <li><strong>발견이 있다</strong>학생이 차이를 설명하려다 개념에 스스로 도달</li>
+        <li><strong>오개념이 드러난다</strong>탐색 과정에서 잘못된 직관이 표면으로 올라옴</li>
+      </ul>
+
+      <div class="tag limit" style="margin-top:0.8rem">한계</div>
+      <ul>
+        <li><strong>구조적 정교함이 없다</strong>발견에서 멈추고 깊어지지 않음</li>
+        <li><strong>상위권을 못 밀어붙인다</strong>발견 이후 도전이 없음</li>
+        <li><strong>교사 의존도가 높다</strong>발문 설계 역량이 없으면 그냥 활동으로 끝남</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- 핵심 진단 -->
+  <div class="diagnosis">
+    <h3>핵심 진단 — math-explorer가 노리는 것</h3>
+
+    <div class="diagnosis-grid">
+      <div class="diagnosis-item khan">
+        <span>칸아카데미</span>
+        <p>원리는 있으나 동기도 깊이도 없다</p>
+      </div>
+      <div class="diagnosis-item korea">
+        <span>한국식</span>
+        <p>깊이는 있으나 동기도 발견도 없다</p>
+      </div>
+      <div class="diagnosis-item finland">
+        <span>핀란드식</span>
+        <p>동기와 발견은 있으나 깊이가 없다</p>
+      </div>
+    </div>
+
+    <div class="diagnosis-conclusion">
+      세 접근법의 한계는 같은 문제의 세 단면이다.<br>
+      math-explorer는 단순히 장점을 합치는 게 아니다.<br>
+      <strong>각각의 한계가 서로를 보완하는 구조를 설계하는 것이다.</strong>
+    </div>
+  </div>
+
+</div>
+
+<!-- 소인수분해 -->
+<div class="section" id="prime">
+
+  <!-- 1단계 카드 -->
+  <div class="stage-card">
+    <h2>1단계 — 모둠 나누기 (소수 발견)</h2>
+
+    <span class="stage-label">상황</span>
+    <ul>
+      <li>우리 반 28명을 체육 시간에 똑같은 크기의 모둠으로 나누려 한다.<br>몇 가지 방법이 있을까?</li>
+    </ul>
+
+    <span class="stage-label">학생 탐색 과정</span>
+    <ul>
+      <li>28 = 2 × 14</li>
+      <li>28 = 4 × 7</li>
+      <li><strong>28 = 7 × 4 &nbsp;← 같은 건가 다른 건가? (첫 번째 막힘)</strong></li>
+      <li>28 = 14 × 2</li>
+      <li><strong>28 = 28 × 1 ← 1명짜리 모둠은 모둠인가? (두 번째 막힘)</strong></li>
+    </ul>
+
+    <span class="stage-label">전환 발문</span>
+    <ul>
+      <li>그런데 우리 반이 29명이라면?</li>
+    </ul>
+
+    <span class="stage-label">학생이 도달하는 발견</span>
+    <ul>
+      <li>29는 1과 29로밖에 안 나눠진다</li>
+      <li>→ "이런 수"가 뭔가 특별하다</li>
+      <li>→ 학생이 이름을 붙이고 싶어진다 (소수 개념 자연 도달)</li>
+    </ul>
+
+    <span class="stage-label">앱 구현 방식</span>
+    <ul style="margin-bottom:1.5rem;">
+      <li>화면에 28개 점을 보여준다</li>
+      <li>학생이 직접 배열을 만든다 (터치로 행/열 조정)</li>
+      <li>가능한 배열이 완성되면 기록된다</li>
+      <li>29로 바꿨을 때 배열이 하나밖에 안 만들어진다</li>
+    </ul>
+
+    <span class="stage-label">막힘 설계 2개</span>
+
+    <div class="blocking-card b1" style="margin-top:0.5rem;">
+      <h3>막힘 1 — 4×7과 7×4는 같은가 다른가?</h3>
+      <span class="stage-label">학생이 느끼는 혼란</span>
+      <ul>
+        <li>수학시간 → 4×7 = 7×4 (교환법칙, 같다)</li>
+        <li>체육시간 → 4모둠×7명 ≠ 7모둠×4명 (다르다)</li>
+      </ul>
+      <span class="stage-label">앱이 유도하는 탐색</span>
+      <ul>
+        <li>"4모둠에 7명씩"과 "7모둠에 4명씩"</li>
+        <li>운동장에서 실제로 다른가?</li>
+        <li>둘 다 그려봐라</li>
+      </ul>
+      <span class="stage-label">학생이 도달하는 발견</span>
+      <ul>
+        <li>현실 → 다르다 (모둠 수가 다르니까)</li>
+        <li>수학 → 같다 (28명을 나눈다는 본질은 같으니까)</li>
+        <li>→ "수학에서는 4와 7이라는 수의 쌍이 중요하다"</li>
+        <li>→ 약수 쌍 개념 자연 도달</li>
+      </ul>
+    </div>
+
+    <div class="blocking-card b2">
+      <h3>막힘 2 — 1명짜리 모둠은 인정하는가?</h3>
+      <span class="stage-label">학생이 느끼는 혼란</span>
+      <ul>
+        <li>1×28 = 28 이니까 수학적으로는 맞다</li>
+        <li>그런데 28모둠에 1명씩은 모둠이 아니다</li>
+      </ul>
+      <span class="stage-label">앱이 유도하는 탐색</span>
+      <ul>
+        <li>1명짜리 모둠을 인정하면</li>
+        <li>모든 수가 항상 "1과 자기 자신"으로 나눠진다</li>
+        <li>그러면 29도 나눠지는 셈이 된다</li>
+        <li>29가 특별한 이유가 사라진다</li>
+        <li>→ 1을 제외해야 29의 특별함이 살아난다</li>
+      </ul>
+      <span class="stage-label">학생이 도달하는 발견</span>
+      <ul>
+        <li>1은 제외하는 게 수학적으로 더 유용하다</li>
+        <li>→ 학생이 규칙을 스스로 정한다</li>
+        <li>→ "소수에서 1을 제외하는 이유"를<br>&nbsp;&nbsp;&nbsp;교사가 설명하는 게 아니라<br>&nbsp;&nbsp;&nbsp;학생이 필요를 느껴서 결정한다</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="matrix-header">
+    <p>행 = 한국 레벨 (계산 난이도) · 열 = 핀란드 레벨 (사고 수준) · 셀 클릭 시 상세 보기</p>
+  </div>
+  <div class="matrix-grid-wrap">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th class="col-header">핀란드 하<br><span style="font-weight:400;color:var(--sub)">사고 확인</span></th>
+          <th class="col-header">핀란드 중<br><span style="font-weight:400;color:var(--sub)">사고 적용</span></th>
+          <th class="col-header">핀란드 상<br><span style="font-weight:400;color:var(--sub)">사고 발견</span></th>
+        </tr>
+      </thead>
+      <tbody id="matrixBody"></tbody>
+    </table>
+  </div>
+  <div class="problem-detail" id="problemDetail"></div>
+
+</div>
+
+<!-- 자동화 과정 -->
+<div class="section" id="pipeline">
+
+  <!-- 자동화 파이프라인 카드 -->
+  <div class="stage-card" style="margin-top:1.2rem;">
+    <h2>자동화 파이프라인</h2>
+
+    <span class="stage-label">자동화 참여자 순서</span>
+    <ul style="margin-bottom:1.5rem;">
+      <li><strong>사용자</strong>Google Sheet에 행 추가</li>
+      <li><strong>Make.com</strong>새 행 감지 → HTTP POST 전송</li>
+      <li><strong>ngrok</strong>외부 요청을 로컬 서버로 터널링</li>
+      <li><strong>pipeline_server.py</strong>요청 수신, 전체 흐름 조율</li>
+      <li><strong>claude-opus-4-7 (Claude API)</strong>실제 문제 생성</li>
+      <li><strong>GitHub</strong>생성된 JSON 커밋/저장</li>
+      <li><strong>GitHub Pages</strong>학생 앱에 자동 반영</li>
+    </ul>
+
+    <span class="stage-label">Claude 역할 구분</span>
+    <ul>
+      <li><strong>Claude Code</strong>파이프라인 자체를 설계/구축/디버깅. 자동화 과정에서는 참여 안 함</li>
+      <li><strong>claude.ai</strong>사용자와 전략 논의용. 자동화 과정에서는 참여 안 함</li>
+      <li><strong>claude-opus-4-7</strong>실제 파이프라인 안에서 문제를 생성하는 실무자</li>
+    </ul>
+  </div>
+
+  <!-- 소인수분해 문제 9개 생성 전체 과정 카드 -->
+  <div class="stage-card" style="margin-top:1.2rem;">
+    <h2>소인수분해 문제 9개가 만들어진 전체 과정</h2>
+
+    <div class="blocking-card b1" style="margin-top:0.5rem;">
+      <h3>1단계 — 사용자가 Google Sheets에 행 추가</h3>
+      <ul>
+        <li>단원명 | 매트릭스위치 | 한국레벨 | 핀란드레벨 9행을 입력했습니다.</li>
+      </ul>
+    </div>
+
+    <div class="blocking-card b1">
+      <h3>2단계 — Make.com이 감지</h3>
+      <ul>
+        <li>Google Sheets의 "Watch New Rows" 모듈이 새 행을 감지하면 자동으로 HTTP POST를 쏩니다.</li>
+        <li>목적지: https://backboned-diploma-snarl.ngrok-free.app/webhook</li>
+      </ul>
+    </div>
+
+    <div class="blocking-card b1">
+      <h3>3단계 — ngrok이 터널링</h3>
+      <ul>
+        <li>ngrok이 외부 요청을 사용자 PC의 localhost:5001로 전달합니다.</li>
+        <li>PC가 켜져 있고 ngrok이 실행 중일 때만 작동합니다.</li>
+      </ul>
+    </div>
+
+    <div class="blocking-card b1">
+      <h3>4단계 — pipeline_server.py가 수신</h3>
+      <ul>
+        <li>C:\Users\USER\math-explorer\make-pipeline\pipeline_server.py가 요청을 받아서:</li>
+        <li>Make.com에 즉시 202 응답 (40초 타임아웃 방지)</li>
+        <li>백그라운드 스레드에서 실제 처리 시작</li>
+      </ul>
+    </div>
+
+    <div class="blocking-card b1">
+      <h3>5단계 — Claude API(claude-opus-4-7)가 문제 생성</h3>
+      <ul>
+        <li>pipeline_server.py가 Anthropic API를 호출합니다.</li>
+        <li>프롬프트에는 설계 철학, 단계별 intro, 6개 품질 원칙, 매트릭스 위치/레벨 조건이 담겨 있습니다.</li>
+        <li>Claude가 JSON 1개를 생성해서 반환합니다.</li>
+      </ul>
+    </div>
+
+    <div class="blocking-card b1">
+      <h3>6단계 — GitHub에 커밋</h3>
+      <ul>
+        <li>생성된 JSON이 data/units/m1-prime/problems/m1p-00X.json으로 저장되고</li>
+        <li>자동으로 git commit + git push됩니다.</li>
+      </ul>
+    </div>
+
+    <div class="blocking-card b2">
+      <h3>7단계 — 강사용 앱에서 읽기</h3>
+      <ul>
+        <li>Claude Code가 그 JSON 파일 9개를 직접 읽어서</li>
+        <li>instructor-app/index.html의 문제 목록 탭에 하드코딩했습니다.</li>
+        <li>이제 브라우저에서 셀 클릭 → 상세 내용이 보입니다.</li>
+      </ul>
+    </div>
+
+    <span class="stage-label" style="margin-top:1rem; display:inline-block;">핵심 구분</span>
+    <ul>
+      <li><strong>문제를 생성한 건</strong>→ claude-opus-4-7 (API, 자동화 파이프라인 안)</li>
+      <li><strong>앱을 설계/구축한 건</strong>→ Claude Code (지금 대화 상대)</li>
+      <li><strong>전략을 논의하는 건</strong>→ claude.ai (별도 대화창)</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- 음수 -->
+<div class="section" id="negative">
+
+  <!-- 음수 단원 — 1단계: 기준점 게임 -->
+  <div class="stage-card" style="margin-top:1.2rem; border-top-color: var(--korea);">
+    <div style="font-size:0.7rem; font-weight:700; color:var(--korea); letter-spacing:0.08em; margin-bottom:0.5rem;">음수 단원</div>
+    <h2 style="color:var(--korea);">1단계: 기준점 게임</h2>
+
+    <span class="stage-label">목표</span>
+    <ul style="margin-bottom:1.2rem;">
+      <li>음수의 필요성 발견 (마이너스 기호를 모르는 상태에서 시작)</li>
+    </ul>
+
+    <span class="stage-label">상황 제시 (4개 동시)</span>
+    <ul style="margin-bottom:1.2rem;">
+      <li><strong>오늘 기온</strong>영하 5도</li>
+      <li><strong>건물 지하</strong>지상 기준 아래 2층</li>
+      <li><strong>내 잔고</strong>3,000원 부족</li>
+      <li><strong>해저 탐사</strong>해수면 아래 200m</li>
+    </ul>
+
+    <span class="stage-label">전환 발문</span>
+    <ul style="margin-bottom:0.5rem;">
+      <li>"이 네 상황의 공통점이 뭘까?"</li>
+      <li>예상 답변: "부족하다", "아래다", "기준보다 적다", "반대쪽이다"</li>
+      <li>유도: "맞다. 모두 어떤 기준보다 아래/부족/반대다. 그 기준이 뭔가?" → 기온의 기준=0도, 고도의 기준=해수면</li>
+    </ul>
+
+    <div class="blocking-card b1" style="margin-top:1rem;">
+      <h3>막힘 1 — 표현의 막힘</h3>
+      <span class="stage-label">유발 상황</span>
+      <ul>
+        <li>"이 상황들을 우리가 아는 수로 표현해봐라"</li>
+      </ul>
+      <span class="stage-label">학생 혼란</span>
+      <ul>
+        <li>0, 1, 2, 3…으로는 '기준보다 아래'를 표현할 방법이 없다</li>
+      </ul>
+      <span class="stage-label">탐색 유도</span>
+      <ul>
+        <li>"영상 5도는 5라고 쓴다. 영하 5도는?"</li>
+        <li>"수직선 위에 영상 5도를 표시했다. 영하 5도는 어디에 있는가?"</li>
+      </ul>
+      <span class="stage-label">발견</span>
+      <ul>
+        <li>0의 왼쪽/아래에 수가 있어야 하는데 표현할 기호가 없다</li>
+        <li>→ 학생이 새로운 기호의 필요성을 스스로 요구</li>
+      </ul>
+      <span class="stage-label">연결</span>
+      <ul>
+        <li>2단계 절댓값</li>
+      </ul>
+    </div>
+
+    <div class="blocking-card b2">
+      <h3>막힘 2 — 방향의 발견</h3>
+      <span class="stage-label">유발 상황</span>
+      <ul>
+        <li>"영상 5도와 영하 5도. 둘 다 '5'인데 같은가?"</li>
+      </ul>
+      <span class="stage-label">학생 혼란</span>
+      <ul>
+        <li>숫자는 같은데 의미가 정반대다</li>
+      </ul>
+      <span class="stage-label">탐색 유도</span>
+      <ul>
+        <li>"수직선에 두 수를 표시해봐라. 같은 '5'인데 0을 기준으로 어느 쪽에 있는가?"</li>
+      </ul>
+      <span class="stage-label">발견</span>
+      <ul>
+        <li>같은 숫자라도 방향(기준의 어느 쪽인가)이 다르다</li>
+        <li>숫자는 크기, 부호는 방향 → 양수와 음수의 구조</li>
+      </ul>
+      <span class="stage-label">연결</span>
+      <ul>
+        <li>2단계 절댓값(크기)과 부호(방향)의 분리</li>
+      </ul>
+    </div>
+
+    <span class="stage-label" style="margin-top:1rem; display:inline-block;">최종 발견</span>
+    <ul style="margin-bottom:1.2rem;">
+      <li>기준점(0)이 있고, 그 양쪽으로 방향이 있는 수가 필요하다</li>
+      <li>한쪽은 +, 반대쪽은 − → 양수와 음수 개념 자연 도달</li>
+      <li>0은 '없음'이 아니라 '기준'이다</li>
+    </ul>
+
+    <span class="stage-label">앱 화면</span>
+    <ul style="margin-bottom:1.2rem;">
+      <li>수직선 만들기 — 학생이 직접 0을 기준점으로 놓고, 양쪽으로 눈금을 그려 네 상황을 한 수직선 위에 배치</li>
+    </ul>
+
+    <span class="stage-label">핵심 교육 장치 2개</span>
+    <ul>
+      <li><strong>"0은 기준이다"</strong>중1이 흔히 0을 '없음'으로만 이해하는 오개념을 1단계에서 미리 깬다. 2단계 절댓값(0으로부터의 거리)의 발판이 된다.</li>
+      <li><strong>"숫자=크기, 부호=방향"의 분리</strong>품질 헌법 원칙 1(계산과 사고 분리)과 맞고, 2단계 절댓값으로 직접 연결된다.</li>
+    </ul>
+  </div>
+
+</div>
+
+
+<script>
+  function showSection(id, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  const PROBLEMS = [
+    {
+      problem_id: "m1p-001",
+      matrix_position: "1",
+      korean_level: "하",
+      finland_level: "하",
+      title: "사진 18장 앨범 배치",
+      context: "2단계에서 우리는 사진 12장을 앨범에 직사각형 모양으로 배치할 때 1×12, 2×6, 3×4 세 가지 방법이 있다는 것을 발견했다. 그리고 '나누어 떨어지게 하는 수'만 가로/세로 칸 수가 될 수 있다는 것도 확인했다.",
+      question: "이제 사진 18장을 직사각형 모양으로 배치해보자. 가능한 배치 방법은 모두 몇 가지인가? (가로와 세로를 바꾼 것은 같은 모양으로 본다)",
+      answer: "3가지 (1×18, 2×9, 3×6)",
+      answer_explanation: "18을 나누어 떨어지게 하는 두 수의 쌍을 찾으면 된다. 1×18, 2×9, 3×6 → 3가지. 18의 약수는 1, 2, 3, 6, 9, 18로 6개이고, 쌍으로 묶으면 (1,18), (2,9), (3,6)의 3쌍이 된다. 18=2×3²이므로 약수 개수는 (1+1)(2+1)=6개, 배열 수는 6÷2=3가지. 18은 완전제곱수가 아니므로 정확히 나누어떨어진다.",
+      hints: [
+        { level: 1, text: "18을 나누어 떨어지게 하는 수를 작은 수부터 차례로 찾아봐라. 1로 나누면? 2로 나누면? 3으로 나누면? 4로 나누면?" },
+        { level: 2, text: "1×18, 2×9, 3×6은 가능하다. 4, 5는 18을 나누어 떨어지게 하지 못한다. 6부터는 이미 앞에서 나온 쌍과 같다(3×6과 6×3은 같은 모양)." },
+        { level: 3, text: "18의 약수: 1, 2, 3, 6, 9, 18. 이 약수들을 두 개씩 짝지어 곱이 18이 되도록 만들면 (1,18), (2,9), (3,6). 따라서 3가지." }
+      ],
+      misconception: "① 6×3과 3×6을 다른 배열로 세어 6가지라고 답하는 경우 (1단계 발견 1을 적용하지 못함). ② 1×18을 '직사각형이 아니다'라고 제외하여 2가지라고 답하는 경우. ③ 4×?, 5×?도 가능하다고 착각하여 약수가 아닌 수까지 시도하는 경우.",
+      followup_questions: [
+        "18과 12는 둘 다 배열이 3가지이다. 약수의 개수도 같은가? 소인수분해를 비교해보면?",
+        "만약 타일이 19개라면 배열은 몇 가지일까? 왜 그런가? (1단계의 29와 연결)",
+        "타일이 20개라면? 24개라면? 배열 수가 많아지려면 그 수가 어떤 모양이어야 하는가?"
+      ],
+      next_question_bridge: "18의 배열이 3가지인 이유를 소인수분해 18=2×3²로 설명할 수 있는가? (1+1)×(2+1)=6이 약수 개수이고, 그 절반이 배열 수다. 그렇다면 16은 약수가 5개인데 배열은 왜 3가지일까?",
+      quality_check: {
+        principle_1: { pass: true, note: "계산은 18의 약수 찾기로 매우 단순하지만, 사고는 '배열=약수 쌍'이라는 구조를 확인하는 단계" },
+        principle_2: { pass: true, note: "3×6과 6×3을 다른 것으로 세거나, 1×18을 제외하는 오개념을 가진 학생이 틀린다" },
+        principle_3: { pass: true, note: "타일 배열 맥락은 약수가 '쌍'으로 나타나는 시각적 구조와 직접 연결된다" },
+        principle_4: { pass: true, note: "12와 비교, 소수(19)와 비교, 완전제곱수(16)와 비교 등 후속 발문 3개 이상 가능" },
+        principle_5: { pass: true, note: "약수 개수와 배열 수의 관계(÷2)로 자연스럽게 다음 단계로 연결" },
+        principle_6: { pass: true, note: "①을 푼 학생이 ②(16,18 배열 수가 같은데 소인수분해가 다른 이유)에서 막히는 것은 교육적으로 의미 있는 막힘" }
+      },
+      connects_to_stage: 2,
+      narrative_link: "2단계 exploration_1(12개 타일)에서 발견한 '약수만 가로/세로가 될 수 있다'를 18에 적용하여 확인하는 문제. 이후 exploration_2의 '16과 18은 배열 수가 같은데 소인수분해는 다르다'는 발견으로 자연스럽게 이어진다."
+    },
+    {
+      problem_id: "m1p-002",
+      matrix_position: "2",
+      korean_level: "하",
+      finland_level: "중",
+      title: "의자 20개 강당 배치",
+      context: "2단계에서 우리는 의자 12개를 강당에 직사각형 모양으로 배치할 때 1×12, 2×6, 3×4 — 세 가지 방법이 있다는 걸 발견했다. 그리고 배치 방법의 수가 소인수분해의 지수와 관련이 있다는 것도 알아냈다. 이제 새 학기 의자가 도착했다: 의자 20개.",
+      question: "의자 20개를 강당에 직사각형 모양으로 배치할 수 있는 방법은 모두 몇 가지인가? 그리고 그 개수가 20의 소인수분해 2²×5의 지수들과 어떻게 연결되는지 설명하라. (1×20도 배치로 인정한다. 가로세로만 바꾼 것은 같은 배치로 본다.)",
+      answer: "3가지 (1×20, 2×10, 4×5). 소인수분해 2²×5에서 지수는 2와 1이므로 약수의 개수는 (2+1)×(1+1)=6개이고, 배열의 수는 6÷2=3가지이다.",
+      answer_explanation: "20의 약수를 모두 적으면 1, 2, 4, 5, 10, 20으로 6개다. 약수는 항상 쌍을 이루어 곱이 20이 되므로 (1,20), (2,10), (4,5) — 세 쌍이 나온다. 한 쌍이 한 배열에 대응하므로 배열은 3가지. 소인수분해 2²×5의 지수 2와 1에 각각 1을 더해 곱한 (2+1)(1+1)=6이 약수의 개수와 정확히 일치하며, 20은 완전제곱수가 아니므로 약수들이 모두 서로 다른 쌍을 이루어 6÷2=3이 된다.",
+      hints: [
+        { level: 1, text: "12개 타일로 했던 방법을 그대로 20에 적용해봐라. 1×?, 2×?, 3×?, 4×? … 어디까지 가능한가?" },
+        { level: 2, text: "20의 약수를 모두 나열해봐라. 그 약수들이 어떻게 쌍으로 묶이는지 보라." },
+        { level: 3, text: "20=2²×5. 12=2²×3과 소인수분해의 '지수 구조'가 같다. 12의 배열이 3가지였다면 20은?" }
+      ],
+      misconception: "약수의 개수와 배열의 개수를 혼동하는 학생. 20의 약수가 6개라고 답하면서 배열도 6가지라고 답하거나, 반대로 1×20을 배열로 인정하지 않아 2가지라고 답할 수 있다. 또한 2²×5의 지수 합을 그냥 더해 3가지라고 우연히 맞히고 원리를 모르는 경우도 있다.",
+      followup_questions: [
+        "20과 12는 배열 수가 같은데 다른 수다. 배열 수가 같은 또 다른 수를 하나 찾아봐라. 그 수의 소인수분해는 어떤 모양일 것 같은가?",
+        "만약 타일이 25개라면 배열은 몇 가지인가? 왜 20과 다른 결과가 나오는가?",
+        "(2+1)(1+1)=6에서 왜 '지수에 1을 더하는지' 설명할 수 있는가? 약수를 만드는 과정과 연결지어 말해봐라."
+      ],
+      next_question_bridge: "그러면 배열이 정확히 4가지인 가장 작은 수는 무엇일까? 소인수분해의 지수 구조를 거꾸로 설계해보라.",
+      quality_check: {
+        principle_1: { pass: true, note: "계산은 20의 약수 찾기로 매우 단순(한국 하), 사고는 '지수 구조가 같으면 배열 수가 같다'는 일반화 적용(핀란드 중)." },
+        principle_2: { pass: true, note: "약수 개수와 배열 개수의 혼동, 1×20 포함 여부 혼동이라는 명확한 오개념을 노린다." },
+        principle_3: { pass: true, note: "타일 배열 맥락은 약수 쌍을 시각화하는 필수 장치로, 2단계와 직접 연결된다." },
+        principle_4: { pass: true, note: "3가지 후속 발문이 각각 다른 방향(같은 구조 탐색, 완전제곱수 비교, 공식 원리 증명)으로 확장 가능." },
+        principle_5: { pass: true, note: "정답자에게 '배열 4가지인 가장 작은 수'라는 역방향 설계 질문이 준비됨." },
+        principle_6: { pass: true, note: "2단계에서 12(=2²×3)로 배열 수=3을 발견한 학생이 20(=2²×5)에서 같은 결과를 예측해보는 자연스러운 적용 단계." }
+      },
+      connects_to_stage: 2,
+      narrative_link: "2단계 block_2_2에서 발견한 '(지수+1)의 곱=약수 개수' 공식을 새로운 수에 적용하는 첫 번째 다리 문제. 이후 3단계의 '소인수분해 유일성'으로 가기 전에, 학생이 소인수분해의 구조가 수의 '모양'을 결정한다는 감각을 확실히 다지게 한다."
+    },
+    {
+      problem_id: "m1p-003",
+      matrix_position: "3",
+      korean_level: "하",
+      finland_level: "상",
+      title: "9는 왜 특별한가?",
+      context: "친구가 말한다: '약수가 2개인 수는 소수야. 그럼 약수가 3개인 수는 뭐라고 불러야 할까?' 작은 수들 중에서 약수가 정확히 3개인 수를 찾아보자. 1부터 20까지 직접 세어봐도 좋다.",
+      question: "1부터 20까지의 수 중에서 약수가 정확히 3개인 수를 모두 찾고, 그 수들이 어떤 공통된 구조를 가지는지 설명하시오.",
+      answer: "4와 9. 두 수 모두 '소수의 제곱' 형태이다 (4=2², 9=3²).",
+      answer_explanation: "1부터 20까지 약수를 직접 세면: 4의 약수는 1,2,4 (3개), 9의 약수는 1,3,9 (3개). 다른 수들은 모두 2개(소수)이거나 4개 이상이다. 4=2², 9=3²로 둘 다 소수를 두 번 곱한 수다. 2단계에서 발견한 '(지수+1)의 곱 = 약수 개수' 규칙으로 보면, 약수가 3개가 되려면 (지수+1)=3, 즉 지수가 2인 소인수가 딱 하나만 있어야 한다. 그래서 약수가 3개인 수는 항상 '소수²' 꼴이다.",
+      hints: [
+        { level: 1, text: "1부터 20까지 각 수의 약수를 직접 적어보자. 약수가 2개인 수는 소수다. 그럼 3개인 수는?" },
+        { level: 2, text: "찾은 수들을 소인수분해해봐라. 어떤 공통점이 보이는가?" },
+        { level: 3, text: "2단계에서 배운 (지수+1)의 곱이 약수 개수다. 약수가 3개가 되려면 (지수+1)이 어떤 모양이어야 할까?" }
+      ],
+      misconception: "약수가 3개인 수는 '홀수일 것이다' 또는 '소수의 다음 단계일 것이다'라고 막연히 추측하고, 4를 짝수라서 제외해버린다. 또는 약수 개수를 셀 때 1과 자기 자신을 빼고 세서 6,8 같은 수를 답으로 적는다.",
+      followup_questions: [
+        "약수가 정확히 4개인 수는 어떤 구조일까? (소수³ 또는 소수×다른 소수 두 가지 답이 나온다)",
+        "약수가 정확히 5개인 수를 100 이하에서 찾아라. 왜 매우 드문가?",
+        "약수 개수가 소수(2,3,5,7…)인 수들은 어떤 공통 구조를 가지는가?"
+      ],
+      next_question_bridge: "약수가 3개인 수가 '소수²'라면, 약수가 7개인 수는 어떤 모양일까? 100 이하에서 찾을 수 있을까?",
+      quality_check: {
+        principle_1: { pass: true, note: "계산은 1~20 약수 세기로 단순. 사고는 '약수 개수의 구조'를 일반화하는 발견." },
+        principle_2: { pass: true, note: "4가 짝수라 소수와 무관할 것이라는 오개념, 약수를 셀 때 1과 자기 자신 제외하는 오개념을 노린다." },
+        principle_3: { pass: true, note: "맥락(약수 개수가 3개인 수)이 곧 수학적 본질이며 장식이 아니다." },
+        principle_4: { pass: true, note: "약수 4개, 5개, 7개로 확장하는 후속 발문 3개 이상 제시함." },
+        principle_5: { pass: true, note: "정답을 맞힌 학생에게 약수 7개인 수로 연결되는 다음 질문이 마련됨." },
+        principle_6: { pass: true, note: "개념 확인 단계에서 2단계의 '(지수+1)의 곱' 규칙을 역방향으로 사용해보는 의미 있는 막힘 구간이 생긴다." }
+      },
+      connects_to_stage: 2,
+      narrative_link: "2단계에서 발견한 '(지수+1)의 곱 = 약수 개수' 공식을 역방향으로 사용한다. 공식을 안다는 것과 그것으로 수를 찾을 수 있다는 것의 차이를 경험하게 하고, 이후 약수 개수가 특정 값인 수의 구조를 일반화하는 탐구로 이어진다."
+    },
+    {
+      problem_id: "m1p-004",
+      matrix_position: "4",
+      korean_level: "중",
+      finland_level: "하",
+      title: "초콜릿 72개 상자 포장",
+      context: "초콜릿 72개를 직사각형 모양 상자에 빈틈없이 포장하려 한다. 2단계에서 우리는 초콜릿의 개수를 소인수분해하면 만들 수 있는 직사각형 배치의 수를 알 수 있다는 사실을 발견했다.",
+      question: "초콜릿 72개로 만들 수 있는 서로 다른 직사각형 배치는 모두 몇 가지인가? (가로와 세로를 바꾼 것은 같은 배치로 본다. 1×72도 포함한다.) 또한 그 중에 정사각형 모양 배치가 있는가?",
+      answer: "6가지 직사각형 배열 (1×72, 2×36, 3×24, 4×18, 6×12, 8×9). 정사각형 배열은 없다.",
+      answer_explanation: "72를 소인수분해하면 72 = 2³ × 3². 약수의 개수는 (3+1)(2+1) = 12개. 가로×세로 쌍은 12÷2 = 6쌍이므로 직사각형 배열은 6가지. 지수 3과 2 중 3이 홀수이므로 모든 지수가 짝수가 아니다 → 완전제곱수가 아니다 → 정사각형 배열 없음. 실제 약수: 1, 2, 3, 4, 6, 8, 9, 12, 18, 24, 36, 72 (12개)이고 쌍으로 묶으면 (1,72), (2,36), (3,24), (4,18), (6,12), (8,9) → 6쌍.",
+      hints: [
+        { level: 1, text: "2단계에서 발견한 규칙을 떠올려라. 약수의 개수와 직사각형 배열의 수는 어떤 관계였는가?" },
+        { level: 2, text: "72를 소인수분해해보아라. 72 = 2 × 36 = 2 × 2 × 18 = ... 끝까지 쪼개면?" },
+        { level: 3, text: "72 = 2³ × 3². (지수+1)의 곱 = (3+1)(2+1) = 12가 약수의 개수. 직사각형 배열은 약수를 둘씩 짝지은 것이다. 정사각형이 되려면 지수가 모두 짝수여야 한다." }
+      ],
+      misconception: "약수를 일일이 나열할 때 8과 9 같은 비대칭 쌍을 빠뜨리거나, 1×72를 '직사각형이 아니다'라고 제외하는 학생. 또는 72의 지수 중 짝수가 하나라도 있으면(3²) 정사각형이 된다고 착각하는 학생 — '모든 지수가 짝수'여야 한다는 조건을 놓침.",
+      followup_questions: [
+        "만약 타일이 72개가 아니라 144개라면 배열의 수는 어떻게 달라지는가? 144 = 72×2인데 배열 수도 2배가 되는가?",
+        "72의 약수를 작은 것부터 큰 것까지 나열했을 때, 가운데를 기준으로 어떤 대칭이 보이는가? 그 대칭이 깨지는 수는 어떤 수인가?",
+        "72에 어떤 수를 곱해야 완전제곱수가 되어 정사각형 배열이 가능해지는가? 그 이유를 지수로 설명해보아라."
+      ],
+      next_question_bridge: "72=2³×3²에서 지수 3을 4로 만들기 위해 2를 한 번 더 곱하면 144=2⁴×3²이 된다. 그러면 정사각형이 되는가? 그렇다면 어떤 수에 무엇을 곱해야 정사각형이 되는지 규칙을 일반화할 수 있는가?",
+      quality_check: {
+        principle_1: { pass: true, note: "계산은 72의 소인수분해(보통 난이도)이고, 사고는 2단계에서 발견한 (지수+1)곱 공식과 완전제곱수 판정 규칙을 '확인'하는 수준이다. 분리 가능." },
+        principle_2: { pass: true, note: "약수를 일일이 세다가 8×9 쌍을 놓치거나, 지수 중 하나만 짝수여도 정사각형이라 착각하는 오개념이 명확히 존재한다." },
+        principle_3: { pass: true, note: "타일 맥락은 '직사각형 배열 = 약수 쌍'이라는 수학적 본질과 직결되며, 2단계의 발견을 그대로 응용하는 장치다." },
+        principle_4: { pass: true, note: "후속 발문 3개 제시: 144와의 비교, 약수의 대칭성, 정사각형으로 만들기 위한 곱셈." },
+        principle_5: { pass: true, note: "정답자에게 '72에 무엇을 곱해야 완전제곱수가 되는가'라는 일반화 질문으로 연결." },
+        principle_6: { pass: true, note: "①(소수 발견)→②(약수 구조/완전제곱수)→④(이 문제: 적용 확인)→⑤,⑥(더 큰 수, 일반화)로 점진적 연결. 여기서 막히는 학생은 2단계 발견을 '아직 자기 언어로' 못 가진 학생이라 교육적으로 의미 있는 막힘." }
+      },
+      connects_to_stage: 2,
+      narrative_link: "2단계에서 12, 16, 18, 36으로 발견한 '(지수+1)의 곱 = 약수 개수, 지수가 모두 짝수이면 완전제곱수'라는 규칙을, 더 큰 수 72에 적용해 스스로 확인하는 다리 문제. 이후 매트릭스 5,6에서는 정사각형으로 만들기 위한 곱셈(완전제곱수 만들기)으로 확장된다."
+    },
+    {
+      problem_id: "m1p-005",
+      matrix_position: "5",
+      korean_level: "중",
+      finland_level: "중",
+      title: "사라진 타일의 개수",
+      context: "지수가 어떤 타일 공장에서 일하고 있다. 정사각형 모양의 타일 한 묶음을 받았는데, 라벨이 찢어져 타일의 정확한 개수를 알 수 없다. 지수는 묶음을 직사각형 모양으로 펼쳐보았고, '서로 다른 직사각형 배열이 정확히 4가지'라는 사실만 알아냈다. (단, 1×n 배열도 포함하며, n×m과 m×n은 같은 배열로 본다.) 또한 이 수는 50보다 작은 두 자리 수이고, 3의 배수임을 메모해두었다.",
+      question: "이 타일 묶음의 타일 개수로 가능한 수를 모두 찾고, 각 수의 소인수분해를 써라. 그리고 왜 그 수들만 가능한지 약수의 개수 공식으로 설명하라.",
+      answer: "가능한 수: 24(=2³×3), 30(=2×3×5), 40은 3의 배수가 아니므로 제외. 따라서 24와 30.",
+      answer_explanation: "배열이 4가지 → 약수 개수가 8개(완전제곱수가 아닌 경우, 배열 수 × 2 = 약수 개수). 약수가 8개인 수의 소인수분해 구조는 (지수+1)의 곱이 8이어야 하므로 ①p⁷ ②p³×q ③p×q×r 세 형태. 50 미만 두 자리 3의 배수 중 ①형태는 없음(2⁷=128). ②형태: 2³×3=24, 3³×2=54(제외). ③형태: 2×3×5=30, 2×3×7=42(약수 8개, 50미만, 3배수 → 추가 후보). 재검토: 42=2×3×7, 약수 (1,2,3,6,7,14,21,42) 8개 → 배열 4가지(1×42, 2×21, 3×14, 6×7). 따라서 답은 24, 30, 42.",
+      hints: [
+        { level: 1, text: "배열 수가 4가지라면 약수 개수는 몇 개일까? 2단계에서 발견한 '배열 수 × 2 = 약수 개수'를 떠올려봐라. (단, 완전제곱수일 때는 다르다 — 이 수는 완전제곱수일까?)" },
+        { level: 2, text: "약수 개수가 8개가 되는 소인수분해 구조를 모두 써봐라. (지수+1)들의 곱이 8이 되려면? 8 = 8, 4×2, 2×2×2 세 가지." },
+        { level: 3, text: "세 가지 구조 p⁷, p³q, pqr 각각에 대해 50보다 작고 3의 배수인 두 자리 수를 모두 찾아봐라. 빠뜨린 형태가 없는지 확인하라." }
+      ],
+      misconception: "학생들은 '배열 수 × 2 = 약수 개수' 공식만 기계적으로 적용하여 완전제곱수의 예외를 놓치거나, (지수+1)의 곱이 8이 되는 분해를 8=4×2 한 가지로만 보고 8=2×2×2(세 소인수의 곱) 경우를 빠뜨린다. 또한 24만 찾고 30, 42를 놓치는 경우가 많다.",
+      followup_questions: [
+        "만약 조건을 '3의 배수'에서 '4의 배수'로 바꾸면 답은 어떻게 달라질까? 소인수분해 구조에서 2의 지수가 최소 2 이상이어야 한다는 제약을 어떻게 반영하는가?",
+        "배열이 정확히 '5가지'라면? 약수 개수가 홀수(10개? 아니, 5×2=10이지만 약수가 홀수인 경우는 완전제곱수다) — 학생들이 '배열 5가지'에서 완전제곱수 가능성을 다시 생각하게 만들어라.",
+        "약수가 8개인 수들 중 가장 작은 수는? 가장 큰 두 자리 수는? 소인수분해 구조 세 가지 중 어느 것이 가장 '효율적'으로 작은 수를 만드는가?"
+      ],
+      next_question_bridge: "잘했다. 그런데 만약 '배열이 정확히 3가지'라면? 이건 약수 개수가 6개인 경우와 5개인 경우(완전제곱수!) 둘 다 가능하다. 두 경우를 모두 찾을 수 있겠는가?",
+      quality_check: {
+        principle_1: { pass: true, note: "계산은 50 미만 두 자리 수 검토로 보통 수준. 사고는 약수 개수 공식의 역방향 적용(구조 분해)으로 적용 수준." },
+        principle_2: { pass: true, note: "오개념: (지수+1)곱=8의 분해 중 2×2×2 형태를 놓치는 학생, 완전제곱수 예외를 무시하는 학생을 정확히 가린다." },
+        principle_3: { pass: true, note: "타일 배열 맥락은 2단계 직사각형 타일 발견과 직접 연결되며, '배열 수 ↔ 약수 개수' 관계가 맥락의 본질이다." },
+        principle_4: { pass: true, note: "조건 변경(4의 배수, 5가지 배열, 세 자리로 확장 등)으로 후속 발문 3개 이상 명확히 도출됨." },
+        principle_5: { pass: true, note: "정답 학생에게 '배열 3가지(완전제곱수 포함)' 질문으로 자연스럽게 확장." },
+        principle_6: { pass: true, note: "①번(단순 약수 개수 구하기)을 이해한 학생이 ②번(역방향: 약수 개수→수 찾기)에서 막히는 것은 구조적 사고로의 도약을 요구하는 의미 있는 막힘." }
+      },
+      connects_to_stage: 2,
+      narrative_link: "2단계에서 발견한 '(지수+1)의 곱 = 약수 개수' 공식을 역방향으로 활용하는 첫 문제. 다음 단계에서는 이 구조를 이용해 '약수의 총합'이나 '특정 약수 개수를 갖는 가장 작은 수' 같은 최적화 문제로 확장된다."
+    },
+    {
+      problem_id: "m1p-006",
+      matrix_position: "6",
+      korean_level: "중",
+      finland_level: "상",
+      title: "약수가 정확히 9개인 수의 비밀",
+      context: "수학 동아리에서 '약수의 개수'를 주제로 카드 게임을 만들고 있다. 규칙은 단순하다: 카드에 적힌 자연수의 약수 개수가 정확히 9개여야 '특별 카드'가 된다. 동아리원 민지는 100보다 작은 자연수 중 특별 카드가 될 수 있는 수를 모두 찾으려 한다. 그런데 한 친구가 말했다. '약수가 9개인 수는 전부 완전제곱수일걸?' 다른 친구가 반박했다. '아니야, 그건 우연이야.' 누구 말이 맞을까?",
+      question: "100 이하의 자연수 중 약수의 개수가 정확히 9개인 수를 모두 찾고, 그 수들이 모두 완전제곱수인지(또는 아닌지)를 소인수분해 구조로 설명하시오.",
+      answer: "36, 100 두 개. 그리고 약수가 9개인 자연수는 반드시 완전제곱수이다.",
+      answer_explanation: "약수 개수가 9개가 되려면 소인수분해의 (지수+1)들의 곱이 9여야 한다. 9를 1보다 큰 자연수의 곱으로 분해하면 9=9 또는 9=3×3 두 가지뿐이다. 경우 1) 지수가 8인 경우: p⁸ 꼴. 가장 작은 것이 2⁸=256으로 100을 초과한다. 경우 2) 지수가 (2,2)인 경우: p²×q² 꼴 (p≠q 소수). 2²×3²=36, 2²×5²=100, 2²×7²=196(초과), 3²×5²=225(초과). 따라서 36과 100. 두 경우 모두 지수가 (8) 또는 (2,2)로 '모두 짝수'이므로 항상 완전제곱수이다. 일반화: 약수 개수가 홀수 ⇔ 모든 (지수+1)이 홀수 ⇔ 모든 지수가 짝수 ⇔ 완전제곱수. 9는 홀수이므로 약수가 9개인 수는 반드시 완전제곱수다.",
+      hints: [
+        { level: 1, text: "약수 개수는 소인수분해의 지수들에 1을 더해 곱한 값과 같다. 9를 그렇게 만들려면 (지수+1)들의 곱이 9가 되어야 한다. 9를 1보다 큰 수들의 곱으로 어떻게 쪼갤 수 있을까?" },
+        { level: 2, text: "9 = 9 또는 9 = 3×3. 첫 번째는 p⁸ 꼴, 두 번째는 p²×q² 꼴이라는 뜻이다. 각 꼴에서 100 이하인 수를 직접 만들어봐라." },
+        { level: 3, text: "p⁸: 2⁸=256으로 이미 초과. p²q²: (2²×3², 2²×5², 2²×7², 3²×5²)를 계산해보고 100 이하만 골라라. 그리고 두 꼴 모두 지수가 짝수임을 확인하라." }
+      ],
+      misconception: "약수의 개수가 홀수라는 사실과 완전제곱수의 관계를 외운 학생은 '약수가 9개니까 완전제곱수'라고 결론은 맞히지만, 왜 그런지 소인수분해 구조로 설명하지 못한다. 또는 9=9×1로 분해하여 '지수+1=1'인 소인수를 허용해 p⁸×q⁰ 같은 잘못된 꼴을 따로 세는 학생이 있다(지수 0은 그 소인수가 없는 것과 같다는 점을 놓침).",
+      followup_questions: [
+        "약수 개수가 정확히 15개인 100 이하의 자연수를 찾으라. 어떤 꼴이 가능한가? (15=15, 15=3×5)",
+        "약수 개수가 홀수인 1000 이하 자연수의 개수는? (1²~31²이므로 31개) 왜 √1000의 정수부분과 같아지는가?",
+        "약수 개수가 '소수'인 자연수의 공통 구조는 무엇인가? (지수+1이 그 소수여야 하므로 p^(소수-1) 꼴만 가능)"
+      ],
+      next_question_bridge: "약수가 9개인 수는 모두 완전제곱수였다. 그렇다면 거꾸로, 완전제곱수의 약수 개수는 항상 9개일까? 아니라면 어떤 완전제곱수가 약수 9개를 갖는지 결정하는 조건은 무엇인가?",
+      quality_check: {
+        principle_1: { pass: true, note: "계산은 4²×소수² 수준으로 보통이지만, 사고는 '9의 곱셈 분해 → 지수 구조 → 완전제곱수 일반화'까지 발견해야 함" },
+        principle_2: { pass: true, note: "약수 개수 공식을 외우기만 한 학생은 9=3×3 한 가지만 떠올리고 p⁸ 꼴을 누락함" },
+        principle_3: { pass: true, note: "카드 게임 맥락은 '왜 9개라는 조건이 흥미로운가'를 직관적으로 보여주고, 친구들의 상반된 주장이 탐구 동기를 만든다" },
+        principle_4: { pass: true, note: "약수 개수 15개, 홀수 개수 일반화, 소수 개수 조건 등 후속 발문 3개 이상 제시" },
+        principle_5: { pass: true, note: "역방향 질문(완전제곱수→약수 9개)으로 자연스럽게 다음 탐구 연결" },
+        principle_6: { pass: true, note: "2단계의 '지수가 모두 짝수 ⇔ 완전제곱수' 발견을 역으로 활용하는 구조. 매트릭스 4,5(직접 계산)를 통과한 학생이 6에서 '9의 분해 자체를 분류'하는 메타적 단계로 막히는 것이 교육적으로 의미 있음" }
+      },
+      connects_to_stage: 2,
+      narrative_link: "2단계에서 '지수가 모두 짝수이면 완전제곱수'를 발견한 학생이, 이번에는 약수 개수라는 결과로부터 거꾸로 지수 구조를 복원해야 한다. 즉 '구조→결과'에서 '결과→구조'로 사고 방향이 뒤집힌다. 이는 3단계의 소인수분해 유일성('어떻게 분해해도 같은 소수들') 감각이 있어야 가능한 추론이다."
+    },
+    {
+      problem_id: "m1p-007",
+      matrix_position: "7",
+      korean_level: "상",
+      finland_level: "하",
+      title: "2178의 약수 개수 직접 세기",
+      context: "한 학생이 '약수 개수는 소인수분해의 지수에 1을 더해 곱하면 된다'는 규칙을 2단계에서 발견했다. 이제 이 규칙이 큰 수에서도 정말 통하는지 직접 확인해보려 한다.",
+      question: "2178을 소인수분해한 뒤, (지수+1)의 곱 규칙을 이용해 2178의 약수의 개수를 구하시오. 또한 2178이 완전제곱수인지 아닌지를 소인수분해의 지수만 보고 판단하시오.",
+      answer: "2178 = 2 × 3² × 11², 약수의 개수 = (1+1)(2+1)(2+1) = 18개, 완전제곱수가 아니다 (소인수 2의 지수가 1로 홀수이기 때문).",
+      answer_explanation: "2178을 작은 소수부터 나눠 본다. 2178 ÷ 2 = 1089. 1089는 홀수이므로 2로 더 나눌 수 없다. 1089 ÷ 3 = 363, 363 ÷ 3 = 121. 121은 11×11. 따라서 2178 = 2¹ × 3² × 11². 2단계에서 발견한 규칙대로 (1+1)(2+1)(2+1) = 2 × 3 × 3 = 18개의 약수가 있다. 완전제곱수가 되려면 모든 소인수의 지수가 짝수여야 하는데, 2의 지수가 1(홀수)이므로 완전제곱수가 아니다.",
+      hints: [
+        { level: 1, text: "2178을 가장 작은 소수 2부터 차례로 나눠보아라. 나눠지지 않으면 다음 소수로 넘어간다." },
+        { level: 2, text: "1089까지 도달했다면 3으로 두 번 나눠진다. 그 다음 121이 남는데, 121은 어떤 소수의 제곱일까?" },
+        { level: 3, text: "2178 = 2 × 3² × 11². 약수 개수는 (지수+1)을 모두 곱한다. 완전제곱수 여부는 '모든 지수가 짝수인가'만 보면 된다." }
+      ],
+      misconception: "큰 수를 만나면 소인수분해를 끝까지 진행하지 못하고 중간에서 멈추거나, 약수 개수를 구할 때 지수 자체를 곱해버리는 학생(예: 1×2×2=4개라고 답함). 또는 완전제곱수 판정에서 √2178이 정수인지 계산기로 확인하려 하고, 지수의 짝/홀로 즉시 판단하는 구조적 방법을 사용하지 못한다.",
+      followup_questions: [
+        "2178에 어떤 가장 작은 수를 곱하면 완전제곱수가 되는가? (지수를 모두 짝수로 만들려면?)",
+        "2178의 약수 중 홀수인 것은 몇 개인가? (소인수 2를 제외하고 생각해보면?)",
+        "2178의 약수 중 3의 배수인 것은 몇 개인가?"
+      ],
+      next_question_bridge: "잘했다. 그렇다면 2178 × 2 = 4356은 완전제곱수일까? 지수만 보고 즉시 판단해보아라. 또 √4356은 무엇일까?",
+      quality_check: {
+        principle_1: { pass: true, note: "계산은 복잡(2178의 분해)하지만 사고는 2단계에서 발견한 규칙을 '확인'하는 수준에 머무름. 두 축이 분리됨." },
+        principle_2: { pass: true, note: "지수를 그대로 곱해버리는 오개념, 완전제곱수를 √계산으로만 판단하는 오개념을 드러냄." },
+        principle_3: { pass: true, note: "맥락 자체가 '2단계에서 발견한 규칙을 큰 수에서 검증'하는 수학적 행위. 장식이 아님." },
+        principle_4: { pass: true, note: "완전제곱수로 만드는 최소 곱수, 홀수 약수 개수, 3의 배수 약수 개수 등 3개 이상의 후속 발문 존재." },
+        principle_5: { pass: true, note: "정답 후 '2178×2는 완전제곱수인가'로 지수 조작 사고로 자연 확장됨." },
+        principle_6: { pass: true, note: "2단계 final_discovery(소인수분해 구조 ↔ 약수 개수/완전제곱)를 직접 적용하는 위치. 7번 매트릭스(한국 상·핀란드 하)에 적합." }
+      },
+      connects_to_stage: 2,
+      narrative_link: "2단계에서 발견한 '(지수+1)의 곱 = 약수 개수' 규칙과 '지수가 모두 짝수 ⇔ 완전제곱수' 규칙을, 학생이 직관으로 분해하기 어려운 큰 수 2178에서 직접 확인한다. 다음 문제(8번)에서는 이 규칙을 역방향으로—약수 개수가 주어졌을 때 가능한 수의 구조를 추론하는—사용하게 된다."
+    },
+    {
+      problem_id: "m1p-008",
+      matrix_position: "8",
+      korean_level: "상",
+      finland_level: "중",
+      title: "약수 개수가 같은 두 수의 비밀",
+      context: "수학 동아리에서 '약수의 개수'를 주제로 카드 게임을 만들었다. 카드에 적힌 수의 약수의 개수가 같으면 같은 팀이 된다. 지금 칠판에는 네 장의 카드가 있다: 1) 2³×3²×5, 2) 2²×3×5²×7, 3) 2⁴×3⁴, 4) 2²×3²×5×7. 선생님이 말한다. '이 중 정확히 두 장은 같은 팀이고, 나머지 두 장은 약수의 개수가 서로 다르다. 그런데 같은 팀인 두 수 중 하나는 완전제곱수에 가깝다 — 즉, 약수의 개수가 홀수에 가장 가까운 짝수다. 어떤 두 카드가 같은 팀이고, 그 팀의 약수 개수는 몇 개인가?'",
+      question: "네 카드 중 약수의 개수가 같은 두 카드를 찾고, 그 약수의 개수를 구하시오. 또한 네 카드 중 완전제곱수가 있는지 판별하시오.",
+      answer: "같은 팀: 카드 2번(2²×3×5²×7)과 카드 4번(2²×3²×5×7), 약수의 개수는 각각 36개. 완전제곱수는 카드 3번(2⁴×3⁴) = (2²×3²)² = 36² = 1296.",
+      answer_explanation: "각 카드의 약수 개수를 (지수+1)의 곱으로 계산한다. 카드 1: (3+1)(2+1)(1+1) = 4×3×2 = 24. 카드 2: (2+1)(1+1)(2+1)(1+1) = 3×2×3×2 = 36. 카드 3: (4+1)(4+1) = 5×5 = 25. 카드 4: (2+1)(2+1)(1+1)(1+1) = 3×3×2×2 = 36. 따라서 카드 2와 4가 같은 팀(36개). 약수 개수가 홀수(25)인 카드 3은 모든 지수가 짝수이므로 완전제곱수다.",
+      hints: [
+        { level: 1, text: "약수의 개수를 직접 나열하지 말고, 2단계에서 발견한 '(지수+1)의 곱' 공식을 네 카드 모두에 적용해봐라." },
+        { level: 2, text: "네 개의 결과를 표로 정리해라. 어떤 두 수가 같은지, 어떤 수만 홀수인지 보일 것이다. 홀수가 나오는 경우는 무엇을 의미했지?" },
+        { level: 3, text: "카드 2: 3×2×3×2와 카드 4: 3×3×2×2 — 곱셈의 교환법칙으로 둘 다 36. 카드 3은 5×5=25, 홀수 → 완전제곱수 신호." }
+      ],
+      misconception: "약수의 개수가 같으면 소인수분해 구조도 같아야 한다고 착각한다. 또는 '소인수의 종류가 더 많으면 약수가 더 많다'고 생각해 카드 2(소인수 4개)와 카드 4(소인수 4개)를 같다고 보면서, 카드 1(소인수 3개)도 비슷할 거라 추측한다. (지수+1)의 곱이 핵심이라는 점을 놓친다.",
+      followup_questions: [
+        "카드 2와 카드 4는 약수 개수가 같지만 실제 수의 크기는 다르다. 두 수 중 어느 쪽이 더 큰지 계산 없이 판별할 수 있는가?",
+        "약수 개수가 36개가 되는 또 다른 형태의 소인수분해를 3가지 더 만들어봐라. (예: 2³⁵, 2⁵×3⁵ 등) 가장 작은 수는 무엇인가?",
+        "카드 3을 완전제곱수로 만든 조건은 '모든 지수가 짝수'였다. 만약 카드 3에 ×5를 곱하면 약수 개수는 어떻게 변하고, 완전제곱수 성질은 어떻게 깨지는가?"
+      ],
+      next_question_bridge: "약수 개수가 36인 수 중 가장 작은 수를 만들려면 소인수와 지수를 어떻게 배치해야 할까? (지수+1)의 곱이 36이 되는 방법은 여러 가지인데, 어떤 분해가 가장 작은 수를 만드는지 탐구해보자.",
+      quality_check: {
+        principle_1: { pass: true, note: "계산은 (지수+1) 곱이라는 비교적 큰 수치 비교(복잡), 사고는 '구조가 달라도 약수 개수는 같을 수 있다'는 적용 단계." },
+        principle_2: { pass: true, note: "소인수 개수와 약수 개수를 혼동하는 학생, (지수+1) 공식을 일관되게 적용 못하는 학생을 정확히 가린다." },
+        principle_3: { pass: true, note: "'같은 팀' 맥락은 약수 개수의 동일성이라는 수학적 관계를 직접 구현한다. 맥락 없이도 같은 문제이나, '팀'이 동일성 개념을 자연스럽게 한다." },
+        principle_4: { pass: true, note: "후속 발문 3개 모두 다른 방향(크기 비교, 역구성, 구조 변형)으로 확장 가능." },
+        principle_5: { pass: true, note: "next_question_bridge에서 '약수 36개를 만드는 최소 수' 탐구로 자연 연결." },
+        principle_6: { pass: true, note: "이 8번 문제는 2단계 발견((지수+1)의 곱, 완전제곱수의 홀수 약수)을 응용 수준에서 통합 적용한다. 7번에서 단일 수의 약수 개수를 다뤘다면, 8번은 여러 수의 비교로 확장." }
+      },
+      connects_to_stage: 2,
+      narrative_link: "2단계에서 발견한 '(지수+1)의 곱 = 약수 개수' 공식과 '지수가 모두 짝수 = 완전제곱수' 원리를 동시에 활용하는 통합 응용 문제. 9번 문제(약수 개수 역설계)로 가는 다리 역할."
+    },
+    {
+      problem_id: "m1p-009",
+      matrix_position: "9",
+      korean_level: "상",
+      finland_level: "상",
+      title: "유일성이 깨진 세계의 모순",
+      context: "⑥에서 소인수분해의 유일성을 받아들였다. 이제 가정해보자: 어떤 자연수 N이 두 가지 서로 다른 소인수분해를 갖는다고 하자. N = p₁×p₂×…×pₖ = q₁×q₂×…×qₘ. (좌우의 소수 집합이 다름)",
+      question: "이 가정으로부터 모순을 끌어내어 소인수분해의 유일성을 증명하라. 힌트로 다음을 사용해도 좋다: '소수 p가 두 수의 곱 ab를 나누면, p는 a 또는 b를 나눈다' (유클리드의 보조정리). 그리고 마지막으로, 이 증명이 1단계 block_1_2에서 '왜 1을 소수에서 제외했는가'와 어떻게 연결되는지 설명하라.",
+      answer: "p₁이 q₁×q₂×…×qₘ을 나누므로 유클리드 보조정리에 의해 p₁은 어떤 qᵢ를 나눈다. qᵢ도 소수이므로 p₁=qᵢ. 양변을 p₁으로 나누면 더 작은 수에서 같은 가정이 성립하고, 귀납적으로 두 분해의 소수들이 모두 짝지어진다 → 두 분해는 사실 같다 (순서만 다름). 모순. 1과의 연결: 만약 1을 소수로 인정하면 N=p₁×…×pₖ=1×p₁×…×pₖ=1×1×p₁×…×pₖ…으로 분해가 무한히 많아져 유일성이 처음부터 깨진다.",
+      answer_explanation: "이 문제는 소인수분해 유일성의 표준 증명을 학생 수준에서 재구성한 것이다. 핵심은 (1) 유클리드 보조정리의 적용, (2) 귀납적 소거, (3) 1을 소수로 인정하지 않는 약속이 유일성 명제 자체의 성립 조건임을 인식하는 것.",
+      hints: [
+        { level: 1, text: "p₁은 N의 약수다. 따라서 p₁은 우변의 곱 q₁q₂…qₘ도 나눈다. 소수가 곱을 나누면?" },
+        { level: 2, text: "p₁=qᵢ인 어떤 i가 존재한다. 양변을 p₁으로 나누면 어떤 일이 일어나는가? 더 작은 수의 같은 문제가 된다." },
+        { level: 3, text: "이 과정을 계속 반복하면 두 분해의 모든 소수가 1:1로 짝지어진다. 즉 처음부터 같았던 것이다. 1을 소수에 넣으면 이 짝짓기 과정이 어떻게 깨지는가?" }
+      ],
+      misconception: "구체적 예(360 등)에서만 유일성을 확인하고 '증명했다'고 주장하거나, 유클리드 보조정리를 자명하게 받아들이고 그 자체의 필요성을 인식하지 못하는 오류. 또한 '1×p=p이므로 1도 소수로 봐도 되지 않나'라는 1단계 미해결 직관의 재출현.",
+      followup_questions: [
+        "유클리드 보조정리는 왜 성립하는가? 그 자체를 증명할 수 있는가?",
+        "정수 외의 수 체계(예: a+b√-5 꼴)에서는 유일성이 깨질 수 있다. 어떤 예가 있을까?",
+        "유일성을 사용하지 않고 풀 수 없는 수론 문제의 예를 들어라."
+      ],
+      next_question_bridge: "유일성이 깨지는 수 체계가 실제로 존재한다. 정수 Z[√-5]에서 6=2×3=(1+√-5)(1-√-5)이고 양쪽 인수들이 모두 '더 쪼개지지 않는다'. 그럼에도 우리가 정수에서 유일성을 누리는 것은 어떤 특수한 성질 덕분인가?",
+      quality_check: {
+        principle_1: { pass: true, note: "" },
+        principle_2: { pass: true, note: "" },
+        principle_3: { pass: true, note: "" },
+        principle_4: { pass: true, note: "" },
+        principle_5: { pass: true, note: "" },
+        principle_6: { pass: true, note: "" }
+      },
+      connects_to_stage: 3,
+      narrative_link: "9개 문제 전체 서사의 종결점. 1단계의 '학생이 스스로 1을 제외한 약속'이 9단계 증명의 핵심 전제임을 드러내어, 단원 전체를 하나의 논리적 원환으로 닫는다."
+    }
+  ];
+
+  const KOREAN_ROWS = ["하", "중", "상"];
+  const FINLAND_COLS = ["하", "중", "상"];
+  const NUMS = ["①","②","③","④","⑤","⑥","⑦","⑧","⑨"];
+
+  function buildMatrix() {
+    const tbody = document.getElementById("matrixBody");
+    KOREAN_ROWS.forEach((kr, ri) => {
+      const tr = document.createElement("tr");
+      const th = document.createElement("th");
+      th.className = "row-header";
+      th.innerHTML = `한국 ${kr}<br><span style="font-weight:400;color:var(--sub);">${["계산 단순","계산 보통","계산 복잡"][ri]}</span>`;
+      tr.appendChild(th);
+      FINLAND_COLS.forEach((fi, ci) => {
+        const idx = ri * 3 + ci;
+        const p = PROBLEMS[idx];
+        const td = document.createElement("td");
+        const div = document.createElement("div");
+        div.className = "matrix-cell";
+        div.id = "cell-" + p.problem_id;
+        div.innerHTML = `
+          <div class="cell-num">${NUMS[idx]} ${p.problem_id}</div>
+          <div class="cell-title">${p.title}</div>
+          <div class="cell-tags">
+            <span class="level-tag korea">한국 ${p.korean_level}</span>
+            <span class="level-tag finland">핀란드 ${p.finland_level}</span>
+          </div>`;
+        div.onclick = () => showProblem(p.problem_id);
+        td.appendChild(div);
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+  }
+
+  function showProblem(id) {
+    document.querySelectorAll(".matrix-cell").forEach(c => c.classList.remove("selected"));
+    document.getElementById("cell-" + id).classList.add("selected");
+
+    const p = PROBLEMS.find(x => x.problem_id === id);
+    const panel = document.getElementById("problemDetail");
+    panel.className = "problem-detail visible";
+
+    const qcRows = Object.entries(p.quality_check).map(([k, v]) => `
+      <div class="qc-item">
+        <div class="qc-top">
+          <span class="qc-badge ${v.pass ? 'pass' : 'fail'}">${v.pass ? 'PASS' : 'FAIL'}</span>
+          <strong style="font-size:0.8rem;">${k.replace('_',' ').toUpperCase()}</strong>
+        </div>
+        <p>${v.note || '—'}</p>
+      </div>`).join('');
+
+    panel.innerHTML = `
+      <div class="detail-id">${NUMS[parseInt(p.matrix_position)-1]} ${p.problem_id} · 한국 ${p.korean_level} × 핀란드 ${p.finland_level} · ${p.connects_to_stage}단계 연결</div>
+      <div class="detail-title">${p.title}</div>
+
+      <div class="detail-section">
+        <div class="detail-label">상황 / 맥락</div>
+        <div class="detail-box">${p.context}</div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">핵심 질문</div>
+        <div class="detail-box" style="font-weight:600;">${p.question}</div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">정답</div>
+        <div class="detail-box answer">${p.answer}</div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">정답 해설</div>
+        <div class="detail-box">${p.answer_explanation}</div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">힌트 (단계별)</div>
+        ${p.hints.map(h => `<div class="hint-item"><span class="hint-num">힌트${h.level}</span><span>${h.text}</span></div>`).join('')}
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">오개념 — 이 문제를 틀리는 학생의 패턴</div>
+        <div class="detail-box misconception">${p.misconception}</div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">강사 후속 발문</div>
+        ${p.followup_questions.map(q => `<div class="followup-item">${q}</div>`).join('')}
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">다음 질문으로 연결 (정답 학생용)</div>
+        <div class="bridge-box">${p.next_question_bridge}</div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">학습 서사 연결</div>
+        <div class="detail-box">${p.narrative_link}</div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">품질 검토 (6원칙)</div>
+        <div class="qc-grid">${qcRows}</div>
+      </div>`;
+
+    panel.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  buildMatrix();
+</script>
+
+</body>
+</html>
