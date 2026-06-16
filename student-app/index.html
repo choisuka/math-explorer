@@ -565,7 +565,7 @@
     document.getElementById('prob-label').textContent =
       `${LEVELS[currentLevel].label} · ${idx + 1} / ${LEVELS[currentLevel].ids.length}`;
     document.getElementById('prob-title').textContent = p.title;
-    document.getElementById('prob-context').textContent = p.context;
+    document.getElementById('prob-context').textContent = '';
     document.getElementById('prob-question').textContent = p.question;
 
     document.getElementById('answer-input').value = '';
@@ -641,8 +641,9 @@
     const ni = norm(input);
     const na = norm(answer);
     if (ni === na) return true;
-    // 핵심 숫자들이 모두 포함되는지 확인
-    const nums = na.match(/[\d²³⁴⁵×+,]+/g) || [];
+    // 괄호·마침표 앞 핵심 부분에서만 숫자 추출
+    const keyPart = answer.split(/[.(]/)[0];
+    const nums = keyPart.match(/\d+/g) || [];
     return nums.length > 0 && nums.every(n => ni.includes(n));
   }
 
@@ -651,17 +652,31 @@
     const stepsEl = document.getElementById('solution-steps');
     stepsEl.innerHTML = `
       <div class="solution-step">
+        <div class="step-num">📌</div>
+        <div class="step-content">
+          <h5>이 문제의 상황</h5>
+          <p>${p.context}</p>
+        </div>
+      </div>
+      <div class="solution-step">
         <div class="step-num">✓</div>
         <div class="step-content">
-          <h5>정답</h5>
+          <h5>네가 찾은 것</h5>
           <p>${p.answer}</p>
         </div>
       </div>
       <div class="solution-step">
-        <div class="step-num">📖</div>
+        <div class="step-num">→</div>
         <div class="step-content">
-          <h5>풀이</h5>
+          <h5>왜 그런가</h5>
           <p>${p.answer_explanation}</p>
+        </div>
+      </div>
+      <div class="solution-step">
+        <div class="step-num">?</div>
+        <div class="step-content">
+          <h5>다음 질문</h5>
+          <p>${p.next_question_bridge}</p>
         </div>
       </div>
     `;

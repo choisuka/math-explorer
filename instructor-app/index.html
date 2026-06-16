@@ -469,6 +469,60 @@
     .qc-item p { color: var(--sub); line-height: 1.5; }
 
     td { padding: 0.4rem; vertical-align: top; }
+
+    /* ── 아코디언 ── */
+    .accordion-card {
+      max-width: 1100px;
+      margin: 0.6rem auto 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .accordion-header {
+      padding: 1.1rem 1.5rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 3px solid var(--korea);
+      transition: background 0.15s;
+    }
+
+    .accordion-header:hover { background: var(--bg); }
+
+    .accordion-header .acc-sub {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--korea);
+      letter-spacing: 0.08em;
+      margin-bottom: 0.3rem;
+    }
+
+    .accordion-header h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0;
+    }
+
+    .accordion-chevron {
+      font-size: 0.8rem;
+      color: var(--sub);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    .accordion-chevron.open { transform: rotate(180deg); }
+
+    .accordion-body {
+      display: none;
+      padding: 1.2rem 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .accordion-body.open { display: block; }
   </style>
 </head>
 <body>
@@ -834,10 +888,15 @@
 <!-- 음수 -->
 <div class="section" id="negative">
 
-  <!-- 음수 단원 — 1단계: 기준점 게임 -->
-  <div class="stage-card" style="margin-top:1.2rem; border-top-color: var(--korea);">
-    <div style="font-size:0.7rem; font-weight:700; color:var(--korea); letter-spacing:0.08em; margin-bottom:0.5rem;">음수 단원</div>
-    <h2 style="color:var(--korea);">1단계: 기준점 게임</h2>
+  <!-- 아코디언 1: 1단계: 기준점 게임 -->
+  <div class="accordion-card">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <div><div class="acc-sub">음수 단원</div><h3>1단계: 기준점 게임</h3></div>
+      <span class="accordion-chevron">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div style="font-size:0.7rem; font-weight:700; color:var(--korea); letter-spacing:0.08em; margin-bottom:0.5rem;">음수 단원</div>
+      <h2 style="color:var(--korea);">1단계: 기준점 게임</h2>
 
     <span class="stage-label">목표</span>
     <ul style="margin-bottom:1.2rem;">
@@ -927,12 +986,234 @@
       <li><strong>"0은 기준이다"</strong>중1이 흔히 0을 '없음'으로만 이해하는 오개념을 1단계에서 미리 깬다. 2단계 절댓값(0으로부터의 거리)의 발판이 된다.</li>
       <li><strong>"숫자=크기, 부호=방향"의 분리</strong>품질 헌법 원칙 1(계산과 사고 분리)과 맞고, 2단계 절댓값으로 직접 연결된다.</li>
     </ul>
+    </div>
+  </div>
+
+  <!-- 아코디언 2: 덧셈과 뺄셈 -->
+  <div class="accordion-card">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <div><div class="acc-sub">음수 단원</div><h3>덧셈과 뺄셈</h3></div>
+      <span class="accordion-chevron">▼</span>
+    </div>
+    <div class="accordion-body">
+    <h2 style="color:var(--korea);">덧셈</h2>
+
+    <div class="blocking-card b1" style="margin-top:0.5rem;">
+      <h3>같은 부호</h3>
+      <ul>
+        <li>(+3) + (+5) → 3+5=8 → +8</li>
+        <li>(−3) + (−5) → 3+5=8 → −8</li>
+      </ul>
+    </div>
+
+    <div class="blocking-card b2">
+      <h3>다른 부호</h3>
+      <ul>
+        <li>(+7) + (−3) → 7-3=4 → 큰 쪽(7) 부호 + → +4</li>
+        <li>(−7) + (+3) → 7-3=4 → 큰 쪽(7) 부호 − → −4</li>
+      </ul>
+    </div>
+
+    <h2 style="color:var(--korea); margin-top:1.5rem;">뺄셈</h2>
+    <span class="stage-label">원칙</span>
+    <ul style="margin-bottom:1rem;">
+      <li>먼저 덧셈으로 바꾼다. 그다음 위 규칙 적용.</li>
+    </ul>
+
+    <div class="blocking-card b1" style="margin-top:0.5rem;">
+      <h3>변환 예시</h3>
+      <ul>
+        <li>(+5) − (+3) → (+5) + (−3) 다른 부호 → 5-3=2 → +2</li>
+        <li>(+5) − (−3) → (+5) + (+3) 같은 부호 → 5+3=8 → +8</li>
+        <li>(−5) − (+3) → (−5) + (−3) 같은 부호 → 5+3=8 → −8</li>
+        <li>(−5) − (−3) → (−5) + (+3) 다른 부호 → 5-3=2 → −2</li>
+      </ul>
+    </div>
+
+    <span class="stage-label" style="margin-top:1rem; display:inline-block;">흐름</span>
+    <div style="background:var(--bg); border-radius:10px; padding:1rem 1.2rem; margin-top:0.5rem; font-size:0.88rem; line-height:2;">
+      뺄셈 → 덧셈으로 변환<br>
+      ↓<br>
+      같은 부호? → 절댓값 더하기 + 공통 부호<br>
+      다른 부호? → 절댓값 빼기 + 큰 쪽 부호
+    </div>
+    </div>
+  </div>
+
+  <!-- 아코디언 3: 핀란드식 현장 해법 -->
+  <div class="accordion-card">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <div><div class="acc-sub">음수 단원</div><h3>핀란드식 현장 해법 — 음수 빼기</h3></div>
+      <span class="accordion-chevron">▼</span>
+    </div>
+    <div class="accordion-body">
+    <h2 style="color:var(--korea);">핀란드식 현장 해법 — 음수 빼기</h2>
+
+    <span class="stage-label">핵심 원칙</span>
+    <ul style="margin-bottom:1.2rem;">
+      <li>이 지점은 상황으로 억지로 만들지 않고 수직선에서 패턴으로 발견시키는 게 더 정직하다.</li>
+    </ul>
+
+    <div class="blocking-card b1" style="margin-top:0.5rem;">
+      <h3>패턴으로 발견하기</h3>
+      <span class="stage-label">수직선 패턴 제시</span>
+      <ul>
+        <li>−5 − 3 = −8 &nbsp;&nbsp;(3 빼기 → 왼쪽)</li>
+        <li>−5 − 2 = −7</li>
+        <li>−5 − 1 = −6</li>
+        <li>−5 − 0 = −5</li>
+        <li>−5 − (−1) = ? &nbsp;&nbsp;← 패턴대로면?</li>
+        <li>−5 − (−2) = ?</li>
+        <li>−5 − (−3) = ?</li>
+      </ul>
+      <span class="stage-label">풀이</span>
+      <div style="overflow-x:auto; margin:0.8rem 0;">
+        <svg width="600" height="160" viewBox="0 0 600 160" style="display:block; min-width:540px;">
+          <!-- 수직선 -->
+          <line x1="30" y1="80" x2="570" y2="80" stroke="#2a2d3e" stroke-width="2"/>
+          <!-- 화살표 -->
+          <polygon points="570,75 580,80 570,85" fill="#2a2d3e"/>
+
+          <!-- 눈금 및 숫자 (-10 ~ 2) -->
+          <!-- 각 숫자 간격 = 540/12 = 45px, x시작 = 30 -->
+          <!-- -10=30, -9=75, -8=120, -7=165, -6=210, -5=255, -4=300, -3=345, -2=390, -1=435, 0=480, 1=525, 2=570 -->
+          <g fill="#8b8fa8" font-size="11" text-anchor="middle" font-family="monospace">
+            <line x1="30"  y1="75" x2="30"  y2="85" stroke="#8b8fa8" stroke-width="1.5"/>
+            <line x1="75"  y1="75" x2="75"  y2="85" stroke="#8b8fa8" stroke-width="1.5"/>
+            <line x1="120" y1="75" x2="120" y2="85" stroke="#8b8fa8" stroke-width="1.5"/>
+            <line x1="165" y1="75" x2="165" y2="85" stroke="#8b8fa8" stroke-width="1.5"/>
+            <line x1="210" y1="75" x2="210" y2="85" stroke="#8b8fa8" stroke-width="1.5"/>
+            <line x1="255" y1="75" x2="255" y2="85" stroke="#8b8fa8" stroke-width="1.5"/>
+            <line x1="300" y1="75" x2="300" y2="85" stroke="#8b8fa8" stroke-width="1.5"/>
+            <line x1="345" y1="75" x2="345" y2="85" stroke="#8b8fa8" stroke-width="1.5"/>
+            <line x1="390" y1="75" x2="390" y2="85" stroke="#8b8fa8" stroke-width="1.5"/>
+            <line x1="435" y1="75" x2="435" y2="85" stroke="#8b8fa8" stroke-width="1.5"/>
+            <line x1="480" y1="75" x2="480" y2="85" stroke="#4ade80" stroke-width="2"/>
+            <text x="30"  y="100">−10</text>
+            <text x="75"  y="100">−9</text>
+            <text x="120" y="100">−8</text>
+            <text x="165" y="100">−7</text>
+            <text x="210" y="100">−6</text>
+            <text x="255" y="100">−5</text>
+            <text x="300" y="100">−4</text>
+            <text x="345" y="100">−3</text>
+            <text x="390" y="100">−2</text>
+            <text x="435" y="100">−1</text>
+            <text x="480" y="100" fill="#4ade80" font-weight="bold">0</text>
+          </g>
+
+          <!-- 시작점 −5 표시 -->
+          <circle cx="255" cy="80" r="6" fill="#e879f9"/>
+          <text x="255" y="65" text-anchor="middle" fill="#e879f9" font-size="11" font-weight="bold">시작</text>
+
+          <!-- −5 − 3 = −8 : 왼쪽 3칸 -->
+          <path d="M255,45 Q187,20 120,45" stroke="#f59e0b" stroke-width="1.5" fill="none" marker-end="url(#arr-left)"/>
+          <text x="187" y="18" text-anchor="middle" fill="#f59e0b" font-size="10">−3 → 왼쪽</text>
+          <circle cx="120" cy="80" r="4" fill="#f59e0b"/>
+
+          <!-- −5 − (−1) = −4 : 오른쪽 1칸 -->
+          <path d="M255,115 Q277,135 300,115" stroke="#14b8a6" stroke-width="1.5" fill="none" marker-end="url(#arr-right)"/>
+          <circle cx="300" cy="80" r="4" fill="#14b8a6"/>
+
+          <!-- −5 − (−3) = −2 : 오른쪽 3칸 -->
+          <path d="M255,130 Q322,150 390,130" stroke="#6366f1" stroke-width="1.5" fill="none" marker-end="url(#arr-right2)"/>
+          <text x="322" y="152" text-anchor="middle" fill="#6366f1" font-size="10">−(−3) → 오른쪽</text>
+          <circle cx="390" cy="80" r="4" fill="#6366f1"/>
+
+          <!-- 화살표 마커 -->
+          <defs>
+            <marker id="arr-left" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <path d="M6,0 L0,3 L6,6" fill="none" stroke="#f59e0b" stroke-width="1"/>
+            </marker>
+            <marker id="arr-right" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6" fill="none" stroke="#14b8a6" stroke-width="1"/>
+            </marker>
+            <marker id="arr-right2" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6" fill="none" stroke="#6366f1" stroke-width="1"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+
+    </div>
+    </div>
+  </div>
+
+  <!-- 아코디언 4: 덧셈 기본 20문제 -->
+  <div class="accordion-card">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <div><div class="acc-sub">음수 단원</div><h3>덧셈 기본 (20문제)</h3></div>
+      <span class="accordion-chevron">▼</span>
+    </div>
+    <div class="accordion-body">
+
+      <div class="blocking-card b1" style="margin-top:0.5rem;">
+        <h3>유형 1: (+) + (+)</h3>
+        <ul>
+          <li>1. (+3) + (+5) = &nbsp;&nbsp;① 6 　② 7 　③ 8 　④ 9</li>
+          <li>2. (+7) + (+4) = &nbsp;&nbsp;① 10 　② 11 　③ 12 　④ 13</li>
+          <li>3. (+12) + (+8) = &nbsp;&nbsp;① 18 　② 19 　③ 20 　④ 21</li>
+          <li>4. (+15) + (+6) = &nbsp;&nbsp;① 19 　② 20 　③ 21 　④ 22</li>
+          <li>5. (+23) + (+17) = &nbsp;&nbsp;① 38 　② 39 　③ 40 　④ 41</li>
+        </ul>
+      </div>
+
+      <div class="blocking-card b2">
+        <h3>유형 2: (−) + (−)</h3>
+        <ul>
+          <li>6. (−3) + (−5) = &nbsp;&nbsp;① −6 　② −7 　③ −8 　④ −9</li>
+          <li>7. (−7) + (−4) = &nbsp;&nbsp;① −10 　② −11 　③ −12 　④ −13</li>
+          <li>8. (−12) + (−8) = &nbsp;&nbsp;① −18 　② −19 　③ −20 　④ −21</li>
+          <li>9. (−15) + (−6) = &nbsp;&nbsp;① −19 　② −20 　③ −21 　④ −22</li>
+          <li>10. (−23) + (−17) = &nbsp;&nbsp;① −38 　② −39 　③ −40 　④ −41</li>
+        </ul>
+      </div>
+
+      <div class="blocking-card b1">
+        <h3>유형 3: (+) + (−) — 양수가 더 클 때</h3>
+        <ul>
+          <li>11. (+8) + (−3) = &nbsp;&nbsp;① 3 　② 4 　③ 5 　④ 6</li>
+          <li>12. (+9) + (−4) = &nbsp;&nbsp;① 4 　② 5 　③ 6 　④ 7</li>
+          <li>13. (+15) + (−7) = &nbsp;&nbsp;① 6 　② 7 　③ 8 　④ 9</li>
+          <li>14. (+20) + (−13) = &nbsp;&nbsp;① 5 　② 6 　③ 7 　④ 8</li>
+          <li>15. (+30) + (−18) = &nbsp;&nbsp;① 10 　② 11 　③ 12 　④ 13</li>
+        </ul>
+      </div>
+
+      <div class="blocking-card b2">
+        <h3>유형 4: (+) + (−) — 음수가 더 클 때</h3>
+        <ul>
+          <li>16. (+3) + (−8) = &nbsp;&nbsp;① −3 　② −4 　③ −5 　④ −6</li>
+          <li>17. (+4) + (−9) = &nbsp;&nbsp;① −3 　② −4 　③ −5 　④ −6</li>
+          <li>18. (+7) + (−15) = &nbsp;&nbsp;① −6 　② −7 　③ −8 　④ −9</li>
+          <li>19. (+13) + (−20) = &nbsp;&nbsp;① −5 　② −6 　③ −7 　④ −8</li>
+          <li>20. (+18) + (−30) = &nbsp;&nbsp;① −10 　② −11 　③ −12 　④ −13</li>
+        </ul>
+      </div>
+
+      <span class="stage-label" style="margin-top:1rem; display:inline-block;">정답</span>
+      <div style="background:var(--bg); border-radius:10px; padding:1rem 1.2rem; margin-top:0.5rem; font-size:0.88rem; line-height:2; font-family:monospace;">
+        유형 1: 1.③ 　2.② 　3.③ 　4.③ 　5.③<br>
+        유형 2: 6.③ 　7.② 　8.③ 　9.③ 　10.③<br>
+        유형 3: 11.③ 　12.② 　13.③ 　14.③ 　15.③<br>
+        유형 4: 16.③ 　17.③ 　18.③ 　19.③ 　20.③
+      </div>
+
+    </div>
   </div>
 
 </div>
 
 
 <script>
+  function toggleAccordion(header) {
+    const body = header.nextElementSibling;
+    const chevron = header.querySelector('.accordion-chevron');
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    chevron.classList.toggle('open', !isOpen);
+  }
+
   function showSection(id, btn) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));

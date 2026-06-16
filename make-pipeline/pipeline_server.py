@@ -13,10 +13,15 @@ Sheets 컬럼 예시:
 import json
 import os
 import subprocess
+import sys
+import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse
 
 import requests
+
+sys.stdout.reconfigure(encoding="utf-8")
+sys.stderr.reconfigure(encoding="utf-8")
 
 # stock_blog .env에서 API 키 로드
 env_path = r"C:\Users\USER\stock_blog\.env"
@@ -39,6 +44,9 @@ MATRIX_TO_NUM = {
     "①": "001", "②": "002", "③": "003",
     "④": "004", "⑤": "005", "⑥": "006",
     "⑦": "007", "⑧": "008", "⑨": "009",
+    "1": "001", "2": "002", "3": "003",
+    "4": "004", "5": "005", "6": "006",
+    "7": "007", "8": "008", "9": "009",
 }
 
 UNIT_CONFIG = {
@@ -201,7 +209,7 @@ def process_request(data):
     cfg = UNIT_CONFIG[unit_name]
     problem_id = f"{cfg['id_prefix']}-{num}"
 
-    print(f"[시작] {problem_id} {matrix_pos} [{korean_level}×{finland_level}]")
+    print(f"[시작] {problem_id} {matrix_pos} [{korean_level}×{finland_level}]", flush=True)
     notify_make({"status": "started", "problem_id": problem_id,
                  "matrix_position": matrix_pos, "korean_level": korean_level,
                  "finland_level": finland_level})
@@ -211,27 +219,26 @@ def process_request(data):
         problem = generate_problem(intro, matrix_pos, korean_level, finland_level)
         problem["problem_id"] = problem_id
 
-        # quality_check 실패 항목 확인
         qc = problem.get("quality_check", {})
         fails = [k for k, v in qc.items() if not v.get("pass", True)]
         if fails:
-            print(f"[경고] 품질 미통과: {fails}")
+            print(f"[경고] 품질 미통과: {fails}", flush=True)
 
         filepath = save_and_commit(problem, unit_name)
-        print(f"[완료] {filepath}")
+        print(f"[완료] {filepath}", flush=True)
 
         notify_make({"status": "done", "problem_id": problem_id, "fails": fails})
         return 200, {"status": "ok", "problem_id": problem_id, "quality_fails": fails}
 
     except Exception as e:
-        print(f"[오류] {e}")
+        print(f"[오류] {e}", flush=True)
         notify_make({"status": "error", "problem_id": problem_id, "message": str(e)})
         return 500, {"error": str(e)}
 
 
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
-        print(f"[{self.address_string()}] {format % args}")
+        print(f"[{self.address_string()}] {format % args}", flush=True)
 
     def do_GET(self):
         if urlparse(self.path).path == "/health":
@@ -247,14 +254,17 @@ class Handler(BaseHTTPRequestHandler):
         length = int(self.headers.get("Content-Length", 0))
         body = self.rfile.read(length)
 
+        print(f"[RAW BODY] {body}", flush=True)
+
         try:
             data = json.loads(body)
         except Exception:
             self._respond(400, {"error": "invalid JSON"})
             return
 
-        status, result = process_request(data)
-        self._respond(status, result)
+        print(f"[PARSED] {data}", flush=True)
+        self._respond(202, {"status": "accepted"})
+        threading.Thread(target=process_request, args=(data,), daemon=True).start()
 
     def _respond(self, status, body):
         payload = json.dumps(body, ensure_ascii=False).encode()
@@ -266,8 +276,8 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    print(f"파이프라인 서버 시작 — http://0.0.0.0:{PORT}")
-    print(f"Make.com HTTP 모듈 → POST /webhook")
-    print(f"헬스체크 → GET /health")
+    print(f"pipeline server start: http://0.0.0.0:{PORT}")
+    print(f"Make.com HTTP module -> POST /webhook")
+    print(f"health check -> GET /health")
     server = HTTPServer(("0.0.0.0", PORT), Handler)
     server.serve_forever()
