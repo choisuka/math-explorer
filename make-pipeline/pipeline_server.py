@@ -55,6 +55,11 @@ UNIT_CONFIG = {
         "dir": "m1-prime",
         "id_prefix": "m1p",
     },
+    "가분수대분수": {
+        "intro_file": "e3_frac_intro.json",
+        "dir": "e3-frac",
+        "id_prefix": "e3f",
+    },
 }
 
 KOREAN_LABELS = {"하": "한국 하 (계산 단순)", "중": "한국 중 (계산 보통)", "상": "한국 상 (계산 복잡)"}
